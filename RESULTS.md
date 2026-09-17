@@ -49,6 +49,7 @@ So "make the agent verify more" is the wrong axis for this regime — the levera
 | **N-version test validation** (live) | experiment/nversion-test-filter | pass / test frac (wave 6, 33/arm) | 0.455 / 0.858 | 0.485 / 0.878 (p=1.0 / 0.70); 85% of raw alarms suppressed; $0.0067/run vs $0.0169 raw | kept as mechanism, **not** as a win | — |
 | N-version, alarm subgroup (wave 7) | experiment/nversion-test-filter | test frac | 0.787 | 0.922 (p=0.017) | **rejected by adversarial check** (no-alarm runs improved more) | — |
 | Benchmark variant: half the tests visible | main | pass | 25% | 91% (21/23) | kept as finding | isolates convention-guessing from reasoning |
+| N-version with a *different-family* independent implementer (offline) | experiment/nversion-test-filter | alarm recall / precision | 52% / 88% (same family) | 25% / 90% | rejected (lowers coverage) | tests whether implementer diversity raises the alarm rate — it does not |
 | Loop "attractor erasure" | — | exact-repeat rate | — | repeats are 3.4% of commands | rejected before running | not worth the budget |
 
 ## Waves (chronological; every attempt logged, pass or fail)
