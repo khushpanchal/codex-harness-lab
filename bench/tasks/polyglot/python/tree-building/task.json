@@ -1,0 +1,10 @@
+{
+ "id": "python/tree-building",
+ "lang": "python",
+ "solution_files": [
+  "tree_building.py"
+ ],
+ "test_files": [
+  "tree_building_test.py"
+ ]
+}

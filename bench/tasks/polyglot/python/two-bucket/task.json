@@ -1,0 +1,10 @@
+{
+ "id": "python/two-bucket",
+ "lang": "python",
+ "solution_files": [
+  "two_bucket.py"
+ ],
+ "test_files": [
+  "two_bucket_test.py"
+ ]
+}

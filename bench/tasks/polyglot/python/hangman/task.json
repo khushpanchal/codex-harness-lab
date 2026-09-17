@@ -1,0 +1,10 @@
+{
+ "id": "python/hangman",
+ "lang": "python",
+ "solution_files": [
+  "hangman.py"
+ ],
+ "test_files": [
+  "hangman_test.py"
+ ]
+}

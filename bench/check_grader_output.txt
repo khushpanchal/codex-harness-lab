@@ -1,0 +1,62 @@
+python/affine-cipher stub: False 0 / 16 example: True 16 / 16 
+python/beer-song stub: False 0 / 8 example: True 8 / 8 
+python/book-store stub: False 0 / 20 example: True 20 / 20 
+python/bottle-song stub: False 0 / 7 example: True 7 / 7 
+python/bowling stub: False 0 / 31 example: True 31 / 31 
+python/connect stub: False 0 / 10 example: True 10 / 10 
+python/dominoes stub: False 6 / 13 example: True 13 / 13 
+python/dot-dsl stub: False 0 / 12 example: True 12 / 12 
+python/food-chain stub: False 0 / 10 example: True 10 / 10 
+python/forth stub: False 0 / 54 example: True 54 / 54 
+python/go-counting stub: False 0 / 1 example: True 11 / 11 
+python/grade-school stub: False 0 / 20 example: True 20 / 20 
+python/grep stub: False 0 / 25 example: True 25 / 25 
+python/hangman stub: False 0 / 7 example: True 7 / 7 
+python/list-ops stub: False 0 / 24 example: True 24 / 24 
+python/paasio stub: False 0 / 25 example: True 25 / 25 
+python/phone-number stub: False 0 / 21 example: True 21 / 21 
+python/pig-latin stub: False 0 / 22 example: True 22 / 22 
+python/poker stub: False 0 / 37 example: True 37 / 37 
+python/pov stub: False 0 / 15 example: True 15 / 15 
+python/proverb stub: False 0 / 8 example: True 8 / 8 
+python/react stub: False 2 / 14 example: True 14 / 14 
+python/rest-api stub: False 0 / 9 example: True 9 / 9 
+python/robot-name stub: False 0 / 4 example: True 4 / 4 
+python/scale-generator stub: False 0 / 17 example: True 17 / 17 
+python/sgf-parsing stub: False 0 / 23 example: True 23 / 23 
+python/simple-linked-list stub: False 0 / 20 example: True 20 / 20 
+python/transpose stub: False 0 / 12 example: True 12 / 12 
+python/tree-building stub: False 7 / 13 example: True 13 / 13 
+python/two-bucket stub: False 0 / 9 example: True 9 / 9 
+python/variable-length-quantity stub: False 0 / 26 example: True 26 / 26 
+python/wordy stub: False 0 / 25 example: True 25 / 25 
+python/zebra-puzzle stub: False 0 / 2 example: True 2 / 2 
+python/zipper stub: False 0 / 14 example: True 14 / 14 
+rust/accumulate stub: False 0 / 0 example: True 12 / 12 
+rust/acronym stub: False 0 / 10 example: True 10 / 10 
+rust/alphametics stub: False 0 / 10 example: False 0 / 0   <-- BAD
+rust/book-store stub: False 0 / 18 example: True 18 / 18 
+rust/bowling stub: False 0 / 31 example: True 31 / 31 
+rust/decimal stub: False 0 / 0 example: False 0 / 0   <-- BAD
+rust/dot-dsl stub: False 0 / 0 example: True 9 / 9 
+rust/doubly-linked-list stub: False 0 / 17 example: True 19 / 19 
+rust/fizzy stub: False 0 / 7 example: True 14 / 14 
+rust/forth stub: False 0 / 1 example: True 50 / 50 
+rust/grade-school stub: False 0 / 10 example: True 10 / 10 
+rust/luhn-from stub: False 0 / 0 example: True 14 / 14 
+rust/macros stub: False 0 / 0 example: True 18 / 18 
+rust/nucleotide-codons stub: False 0 / 11 example: True 11 / 11 
+rust/ocr-numbers stub: False 0 / 17 example: True 17 / 17 
+rust/parallel-letter-frequency stub: False 0 / 10 example: True 10 / 10 
+rust/pig-latin stub: False 0 / 22 example: False 0 / 0   <-- BAD
+rust/poker stub: False 0 / 37 example: False 0 / 0   <-- BAD
+rust/react stub: False 0 / 20 example: True 22 / 22 
+rust/robot-name stub: False 0 / 5 example: False 0 / 0   <-- BAD
+rust/say stub: False 0 / 19 example: True 19 / 19 
+rust/scale-generator stub: False 0 / 17 example: True 17 / 17 
+rust/two-bucket stub: False 0 / 9 example: True 9 / 9 
+rust/variable-length-quantity stub: False 0 / 26 example: True 26 / 26 
+rust/word-count stub: False 0 / 14 example: True 14 / 14 
+rust/wordy stub: False 0 / 23 example: True 23 / 23 
+rust/xorcism stub: False 0 / 0 example: True 77 / 77 
+BAD: ['rust/alphametics', 'rust/decimal', 'rust/pig-latin', 'rust/poker', 'rust/robot-name']

@@ -1,0 +1,11 @@
+{
+ "id": "rust/grade-school",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/grade-school.rs"
+ ]
+}

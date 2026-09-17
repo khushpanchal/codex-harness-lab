@@ -1,0 +1,10 @@
+{
+ "id": "python/list-ops",
+ "lang": "python",
+ "solution_files": [
+  "list_ops.py"
+ ],
+ "test_files": [
+  "list_ops_test.py"
+ ]
+}

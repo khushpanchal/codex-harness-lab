@@ -1,0 +1,10 @@
+{
+ "id": "python/proverb",
+ "lang": "python",
+ "solution_files": [
+  "proverb.py"
+ ],
+ "test_files": [
+  "proverb_test.py"
+ ]
+}

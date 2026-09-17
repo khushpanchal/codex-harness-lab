@@ -1,0 +1,11 @@
+{
+ "id": "python/paasio",
+ "lang": "python",
+ "solution_files": [
+  "paasio.py"
+ ],
+ "test_files": [
+  "paasio_test.py",
+  "test_utils.py"
+ ]
+}

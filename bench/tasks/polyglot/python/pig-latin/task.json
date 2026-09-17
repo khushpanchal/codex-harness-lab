@@ -1,0 +1,10 @@
+{
+ "id": "python/pig-latin",
+ "lang": "python",
+ "solution_files": [
+  "pig_latin.py"
+ ],
+ "test_files": [
+  "pig_latin_test.py"
+ ]
+}

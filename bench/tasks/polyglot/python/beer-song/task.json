@@ -1,0 +1,10 @@
+{
+ "id": "python/beer-song",
+ "lang": "python",
+ "solution_files": [
+  "beer_song.py"
+ ],
+ "test_files": [
+  "beer_song_test.py"
+ ]
+}

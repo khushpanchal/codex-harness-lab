@@ -1,0 +1,10 @@
+{
+ "id": "python/bowling",
+ "lang": "python",
+ "solution_files": [
+  "bowling.py"
+ ],
+ "test_files": [
+  "bowling_test.py"
+ ]
+}

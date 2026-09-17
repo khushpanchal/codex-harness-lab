@@ -1,0 +1,10 @@
+{
+ "id": "python/grep",
+ "lang": "python",
+ "solution_files": [
+  "grep.py"
+ ],
+ "test_files": [
+  "grep_test.py"
+ ]
+}

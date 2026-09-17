@@ -1,0 +1,10 @@
+{
+ "id": "python/connect",
+ "lang": "python",
+ "solution_files": [
+  "connect.py"
+ ],
+ "test_files": [
+  "connect_test.py"
+ ]
+}

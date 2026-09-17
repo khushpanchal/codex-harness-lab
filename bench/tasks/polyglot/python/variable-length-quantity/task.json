@@ -1,0 +1,10 @@
+{
+ "id": "python/variable-length-quantity",
+ "lang": "python",
+ "solution_files": [
+  "variable_length_quantity.py"
+ ],
+ "test_files": [
+  "variable_length_quantity_test.py"
+ ]
+}

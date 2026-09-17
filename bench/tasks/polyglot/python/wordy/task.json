@@ -1,0 +1,10 @@
+{
+ "id": "python/wordy",
+ "lang": "python",
+ "solution_files": [
+  "wordy.py"
+ ],
+ "test_files": [
+  "wordy_test.py"
+ ]
+}

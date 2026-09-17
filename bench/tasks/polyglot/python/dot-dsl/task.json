@@ -1,0 +1,10 @@
+{
+ "id": "python/dot-dsl",
+ "lang": "python",
+ "solution_files": [
+  "dot_dsl.py"
+ ],
+ "test_files": [
+  "dot_dsl_test.py"
+ ]
+}

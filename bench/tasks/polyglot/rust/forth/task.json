@@ -1,0 +1,12 @@
+{
+ "id": "rust/forth",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/forth.rs",
+  "tests/alloc-attack.rs"
+ ]
+}

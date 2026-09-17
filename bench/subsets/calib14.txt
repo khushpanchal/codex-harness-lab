@@ -1,0 +1,14 @@
+polyglot/python/affine-cipher
+polyglot/python/book-store
+polyglot/python/dot-dsl
+polyglot/python/poker
+polyglot/python/sgf-parsing
+polyglot/python/tree-building
+polyglot/python/two-bucket
+polyglot/rust/accumulate
+polyglot/rust/acronym
+polyglot/rust/book-store
+polyglot/rust/bowling
+polyglot/rust/forth
+polyglot/rust/nucleotide-codons
+polyglot/rust/scale-generator

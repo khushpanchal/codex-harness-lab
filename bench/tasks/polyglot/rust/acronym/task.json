@@ -1,0 +1,11 @@
+{
+ "id": "rust/acronym",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/acronym.rs"
+ ]
+}

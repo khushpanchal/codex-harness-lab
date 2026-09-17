@@ -1,0 +1,10 @@
+{
+ "id": "python/simple-linked-list",
+ "lang": "python",
+ "solution_files": [
+  "simple_linked_list.py"
+ ],
+ "test_files": [
+  "simple_linked_list_test.py"
+ ]
+}

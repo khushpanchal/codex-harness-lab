@@ -1,0 +1,10 @@
+{
+ "id": "python/zebra-puzzle",
+ "lang": "python",
+ "solution_files": [
+  "zebra_puzzle.py"
+ ],
+ "test_files": [
+  "zebra_puzzle_test.py"
+ ]
+}

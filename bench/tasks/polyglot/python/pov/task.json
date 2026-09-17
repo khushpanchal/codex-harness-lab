@@ -1,0 +1,10 @@
+{
+ "id": "python/pov",
+ "lang": "python",
+ "solution_files": [
+  "pov.py"
+ ],
+ "test_files": [
+  "pov_test.py"
+ ]
+}

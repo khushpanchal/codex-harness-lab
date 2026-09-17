@@ -1,0 +1,10 @@
+{
+ "id": "python/transpose",
+ "lang": "python",
+ "solution_files": [
+  "transpose.py"
+ ],
+ "test_files": [
+  "transpose_test.py"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "python/zipper",
+ "lang": "python",
+ "solution_files": [
+  "zipper.py"
+ ],
+ "test_files": [
+  "zipper_test.py"
+ ]
+}

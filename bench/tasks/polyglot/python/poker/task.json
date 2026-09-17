@@ -1,0 +1,10 @@
+{
+ "id": "python/poker",
+ "lang": "python",
+ "solution_files": [
+  "poker.py"
+ ],
+ "test_files": [
+  "poker_test.py"
+ ]
+}

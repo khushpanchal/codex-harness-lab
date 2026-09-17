@@ -1,0 +1,10 @@
+{
+ "id": "python/dominoes",
+ "lang": "python",
+ "solution_files": [
+  "dominoes.py"
+ ],
+ "test_files": [
+  "dominoes_test.py"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "python/react",
+ "lang": "python",
+ "solution_files": [
+  "react.py"
+ ],
+ "test_files": [
+  "react_test.py"
+ ]
+}

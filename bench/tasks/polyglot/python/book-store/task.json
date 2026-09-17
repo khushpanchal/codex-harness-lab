@@ -1,0 +1,10 @@
+{
+ "id": "python/book-store",
+ "lang": "python",
+ "solution_files": [
+  "book_store.py"
+ ],
+ "test_files": [
+  "book_store_test.py"
+ ]
+}

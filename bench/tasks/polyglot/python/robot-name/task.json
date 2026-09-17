@@ -1,0 +1,10 @@
+{
+ "id": "python/robot-name",
+ "lang": "python",
+ "solution_files": [
+  "robot_name.py"
+ ],
+ "test_files": [
+  "robot_name_test.py"
+ ]
+}

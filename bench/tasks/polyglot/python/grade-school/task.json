@@ -1,0 +1,10 @@
+{
+ "id": "python/grade-school",
+ "lang": "python",
+ "solution_files": [
+  "grade_school.py"
+ ],
+ "test_files": [
+  "grade_school_test.py"
+ ]
+}

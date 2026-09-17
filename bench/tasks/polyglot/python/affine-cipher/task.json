@@ -1,0 +1,10 @@
+{
+ "id": "python/affine-cipher",
+ "lang": "python",
+ "solution_files": [
+  "affine_cipher.py"
+ ],
+ "test_files": [
+  "affine_cipher_test.py"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "python/forth",
+ "lang": "python",
+ "solution_files": [
+  "forth.py"
+ ],
+ "test_files": [
+  "forth_test.py"
+ ]
+}

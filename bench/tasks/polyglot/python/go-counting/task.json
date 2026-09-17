@@ -1,0 +1,10 @@
+{
+ "id": "python/go-counting",
+ "lang": "python",
+ "solution_files": [
+  "go_counting.py"
+ ],
+ "test_files": [
+  "go_counting_test.py"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "id": "rust/accumulate",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/accumulate.rs"
+ ]
+}

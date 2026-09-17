@@ -1,0 +1,10 @@
+{
+ "id": "python/scale-generator",
+ "lang": "python",
+ "solution_files": [
+  "scale_generator.py"
+ ],
+ "test_files": [
+  "scale_generator_test.py"
+ ]
+}

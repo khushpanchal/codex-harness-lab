@@ -1,0 +1,11 @@
+{
+ "id": "rust/macros",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/macros.rs"
+ ]
+}
