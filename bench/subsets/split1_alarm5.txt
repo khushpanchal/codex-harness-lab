@@ -1,0 +1,6 @@
+# tasks where a VALIDATED N-version alarm actually fired in wave 6 (the subgroup where the mechanism can act)
+../tasks_split1/polyglot/python/go-counting
+../tasks_split1/polyglot/python/grep
+../tasks_split1/polyglot/python/poker
+../tasks_split1/polyglot/python/grade-school
+../tasks_split1/polyglot/rust/wordy
