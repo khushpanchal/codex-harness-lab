@@ -9,6 +9,14 @@ S = pathlib.Path("/Users/khush/Experiments/codex-harness-sandboxes")
 P = S / "polyglot"; R = pathlib.Path("/Users/khush/Experiments/codex-harness/bench/tasks_split1/polyglot")
 
 def per_test(lang, work, test_file):
+    """Returns {test_name: passed}. A hanging suite (model-written infinite loop) yields {}."""
+    try:
+        return _per_test(lang, work, test_file)
+    except subprocess.TimeoutExpired:
+        return {}
+
+
+def _per_test(lang, work, test_file):
     tmp = pathlib.Path(tempfile.mkdtemp()); w = tmp / "w"; shutil.copytree(work, w, ignore=shutil.ignore_patterns("target", "__pycache__"))
     try:
         if lang == "python":
