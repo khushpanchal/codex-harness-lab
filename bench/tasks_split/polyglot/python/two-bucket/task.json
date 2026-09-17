@@ -1,0 +1,14 @@
+{
+ "id": "split/python/two-bucket",
+ "lang": "python",
+ "solution_files": [
+  "two_bucket.py"
+ ],
+ "test_files": [
+  "two_bucket_test.py"
+ ],
+ "visible_tests": [
+  "two_bucket_test.py"
+ ],
+ "hidden_only_tests": 4
+}

@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/zipper",
+ "lang": "python",
+ "solution_files": [
+  "zipper.py"
+ ],
+ "test_files": [
+  "zipper_test.py"
+ ],
+ "visible_tests": [
+  "zipper_test.py"
+ ],
+ "hidden_only_tests": 13
+}

@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/bowling",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/bowling.rs"
+ ],
+ "visible_tests": [
+  "tests/bowling.rs"
+ ],
+ "hidden_only_tests": 15
+}

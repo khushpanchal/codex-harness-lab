@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/react",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/react.rs"
+ ],
+ "visible_tests": [
+  "tests/react.rs"
+ ],
+ "hidden_only_tests": 19
+}

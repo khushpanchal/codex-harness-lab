@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/ocr-numbers",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/ocr-numbers.rs"
+ ],
+ "visible_tests": [
+  "tests/ocr-numbers.rs"
+ ],
+ "hidden_only_tests": 8
+}

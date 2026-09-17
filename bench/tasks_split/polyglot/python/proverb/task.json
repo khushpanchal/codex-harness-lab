@@ -1,0 +1,14 @@
+{
+ "id": "split/python/proverb",
+ "lang": "python",
+ "solution_files": [
+  "proverb.py"
+ ],
+ "test_files": [
+  "proverb_test.py"
+ ],
+ "visible_tests": [
+  "proverb_test.py"
+ ],
+ "hidden_only_tests": 4
+}

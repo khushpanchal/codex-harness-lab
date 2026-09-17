@@ -1,0 +1,14 @@
+{
+ "id": "split/python/beer-song",
+ "lang": "python",
+ "solution_files": [
+  "beer_song.py"
+ ],
+ "test_files": [
+  "beer_song_test.py"
+ ],
+ "visible_tests": [
+  "beer_song_test.py"
+ ],
+ "hidden_only_tests": 4
+}

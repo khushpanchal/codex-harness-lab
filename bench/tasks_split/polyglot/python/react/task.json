@@ -1,0 +1,14 @@
+{
+ "id": "split/python/react",
+ "lang": "python",
+ "solution_files": [
+  "react.py"
+ ],
+ "test_files": [
+  "react_test.py"
+ ],
+ "visible_tests": [
+  "react_test.py"
+ ],
+ "hidden_only_tests": 7
+}
