@@ -1,0 +1,17 @@
+# selected from split1-calib (2 base seeds): mixed outcomes, or 0/2 near-misses (test frac >= 0.75), excluding runaway-cost tasks
+../tasks_split1/polyglot/python/go-counting
+../tasks_split1/polyglot/rust/book-store
+../tasks_split1/polyglot/rust/grade-school
+../tasks_split1/polyglot/rust/word-count
+../tasks_split1/polyglot/python/grep
+../tasks_split1/polyglot/python/scale-generator
+../tasks_split1/polyglot/python/pig-latin
+../tasks_split1/polyglot/python/zebra-puzzle
+../tasks_split1/polyglot/python/simple-linked-list
+../tasks_split1/polyglot/rust/wordy
+../tasks_split1/polyglot/rust/macros
+../tasks_split1/polyglot/rust/variable-length-quantity
+../tasks_split1/polyglot/python/list-ops
+../tasks_split1/polyglot/python/poker
+../tasks_split1/polyglot/python/variable-length-quantity
+../tasks_split1/polyglot/python/grade-school

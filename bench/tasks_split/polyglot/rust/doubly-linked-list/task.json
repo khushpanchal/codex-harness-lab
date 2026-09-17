@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/doubly-linked-list",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/doubly-linked-list.rs"
+ ],
+ "visible_tests": [
+  "tests/doubly-linked-list.rs"
+ ],
+ "hidden_only_tests": 9
+}

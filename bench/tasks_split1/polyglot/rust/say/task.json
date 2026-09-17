@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/say",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/say.rs"
+ ],
+ "visible_tests": [
+  "tests/say.rs"
+ ],
+ "hidden_only_tests": 18
+}

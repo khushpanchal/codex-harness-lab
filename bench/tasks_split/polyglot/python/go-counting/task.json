@@ -1,0 +1,14 @@
+{
+ "id": "split/python/go-counting",
+ "lang": "python",
+ "solution_files": [
+  "go_counting.py"
+ ],
+ "test_files": [
+  "go_counting_test.py"
+ ],
+ "visible_tests": [
+  "go_counting_test.py"
+ ],
+ "hidden_only_tests": 5
+}

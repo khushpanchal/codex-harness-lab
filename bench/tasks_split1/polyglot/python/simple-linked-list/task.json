@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/simple-linked-list",
+ "lang": "python",
+ "solution_files": [
+  "simple_linked_list.py"
+ ],
+ "test_files": [
+  "simple_linked_list_test.py"
+ ],
+ "visible_tests": [
+  "simple_linked_list_test.py"
+ ],
+ "hidden_only_tests": 19
+}

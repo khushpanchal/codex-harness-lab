@@ -1,0 +1,14 @@
+{
+ "id": "split/python/variable-length-quantity",
+ "lang": "python",
+ "solution_files": [
+  "variable_length_quantity.py"
+ ],
+ "test_files": [
+  "variable_length_quantity_test.py"
+ ],
+ "visible_tests": [
+  "variable_length_quantity_test.py"
+ ],
+ "hidden_only_tests": 13
+}

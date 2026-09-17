@@ -1,0 +1,14 @@
+{
+ "id": "split/python/phone-number",
+ "lang": "python",
+ "solution_files": [
+  "phone_number.py"
+ ],
+ "test_files": [
+  "phone_number_test.py"
+ ],
+ "visible_tests": [
+  "phone_number_test.py"
+ ],
+ "hidden_only_tests": 10
+}

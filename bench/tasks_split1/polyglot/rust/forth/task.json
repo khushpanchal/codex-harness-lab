@@ -1,0 +1,17 @@
+{
+ "id": "split1/rust/forth",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/forth.rs",
+  "tests/alloc-attack.rs"
+ ],
+ "visible_tests": [
+  "tests/forth.rs",
+  "tests/alloc-attack.rs"
+ ],
+ "hidden_only_tests": 0
+}

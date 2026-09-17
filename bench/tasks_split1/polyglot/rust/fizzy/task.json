@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/fizzy",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/fizzy.rs"
+ ],
+ "visible_tests": [
+  "tests/fizzy.rs"
+ ],
+ "hidden_only_tests": 6
+}

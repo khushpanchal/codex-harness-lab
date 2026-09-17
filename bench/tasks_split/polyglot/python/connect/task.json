@@ -1,0 +1,14 @@
+{
+ "id": "split/python/connect",
+ "lang": "python",
+ "solution_files": [
+  "connect.py"
+ ],
+ "test_files": [
+  "connect_test.py"
+ ],
+ "visible_tests": [
+  "connect_test.py"
+ ],
+ "hidden_only_tests": 5
+}

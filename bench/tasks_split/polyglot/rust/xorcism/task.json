@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/xorcism",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/xorcism.rs"
+ ],
+ "visible_tests": [
+  "tests/xorcism.rs"
+ ],
+ "hidden_only_tests": 2
+}

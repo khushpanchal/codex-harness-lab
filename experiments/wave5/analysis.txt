@@ -1,0 +1,13 @@
+base       runs= 44 pass=0.500 test_frac=0.870 $/run=0.0094 wall=153s events={}
+blind      runs= 22 pass=0.545 test_frac=0.830 $/run=0.0166 wall=300s events={'blind_tests_generated': 19, 'blind_tests_run': 33}
+mutation   runs= 44 pass=0.523 test_frac=0.823 $/run=0.0095 wall=160s events={'mutation_skipped': 15, 'probe_recorded': 162, 'mutation_check': 22}
+probe      runs= 44 pass=0.523 test_frac=0.870 $/run=0.0079 wall=145s events={'probe_recorded': 157, 'probe_replay': 55}
+selfnudge  runs= 31 pass=0.516 test_frac=0.803 $/run=0.0132 wall=216s events={'self_test_nudge': 26}
+  blind vs base [pass] tasks=16 mean diff=-0.010 strat_perm_p=0.9694
+  blind vs base [test_frac] tasks=16 mean diff=-0.060 strat_perm_p=0.3314
+  mutation vs base [pass] tasks=16 mean diff=-0.000 strat_perm_p=1.0000
+  mutation vs base [test_frac] tasks=16 mean diff=-0.044 strat_perm_p=0.4088
+  probe vs base [pass] tasks=16 mean diff=+0.021 strat_perm_p=0.8507
+  probe vs base [test_frac] tasks=16 mean diff=+0.001 strat_perm_p=0.9812
+  selfnudge vs base [pass] tasks=16 mean diff=-0.010 strat_perm_p=0.9202
+  selfnudge vs base [test_frac] tasks=16 mean diff=-0.068 strat_perm_p=0.2573

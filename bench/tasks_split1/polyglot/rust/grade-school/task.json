@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/grade-school",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/grade-school.rs"
+ ],
+ "visible_tests": [
+  "tests/grade-school.rs"
+ ],
+ "hidden_only_tests": 9
+}

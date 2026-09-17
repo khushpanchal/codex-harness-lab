@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/variable-length-quantity",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/variable-length-quantity.rs"
+ ],
+ "visible_tests": [
+  "tests/variable-length-quantity.rs"
+ ],
+ "hidden_only_tests": 25
+}

@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/food-chain",
+ "lang": "python",
+ "solution_files": [
+  "food_chain.py"
+ ],
+ "test_files": [
+  "food_chain_test.py"
+ ],
+ "visible_tests": [
+  "food_chain_test.py"
+ ],
+ "hidden_only_tests": 9
+}

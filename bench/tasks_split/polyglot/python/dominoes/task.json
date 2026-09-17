@@ -1,0 +1,14 @@
+{
+ "id": "split/python/dominoes",
+ "lang": "python",
+ "solution_files": [
+  "dominoes.py"
+ ],
+ "test_files": [
+  "dominoes_test.py"
+ ],
+ "visible_tests": [
+  "dominoes_test.py"
+ ],
+ "hidden_only_tests": 6
+}

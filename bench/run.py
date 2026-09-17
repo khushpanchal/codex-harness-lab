@@ -29,6 +29,12 @@ SUFFIX = ("\n\n---\nYou are working in the current directory, which contains the
           "(tests for this exercise are not provided). Use only the standard library.")
 
 
+SUFFIX_SPLIT = ("\n\n---\nYou are working in the current directory, which contains the starter files. "
+                "Implement the solution in: {files}. A PARTIAL test suite is provided in {tests}; after you finish, the FULL "
+                "hidden test suite (the provided tests plus additional hidden cases) will be run against your code. "
+                "Do not modify the provided tests. Use only the standard library.")
+
+
 def tree_hash(p):
     h = hashlib.sha256()
     for f in sorted(p.rglob("*")):
@@ -100,7 +106,8 @@ def run_one(args, task_id, seed):
     home.mkdir(parents=True)
     (rdir / "tmp").mkdir()
     (home / "config.toml").write_text(config_toml(args.model, args.provider, rdir))
-    prompt = (tdir / "instructions.md").read_text() + SUFFIX.format(files=", ".join(task["solution_files"]))
+    suffix = SUFFIX_SPLIT if task.get("visible_tests") else SUFFIX
+    prompt = (tdir / "instructions.md").read_text() + suffix.format(files=", ".join(task["solution_files"]), tests=", ".join(task.get("visible_tests", [])))
     env = {
         "PATH": f"{SANDBOX}/toolchain/shims:{SANDBOX}/toolchain/cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
         "HOME": str(home), "CODEX_HOME": str(home),
@@ -207,7 +214,7 @@ def main():
         tasks = [l.strip() for l in open(args.tasks) if l.strip() and not l.startswith("#")]
     outdir = REPO / "experiments" / args.exp
     outdir.mkdir(parents=True, exist_ok=True)
-    bench_before = tree_hash(REPO / "bench" / "tasks") + tree_hash_file(REPO / "bench" / "grade.py")
+    bench_before = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash(REPO / "bench" / "tasks_split1") + tree_hash_file(REPO / "bench" / "grade.py")
     jobs = [(t, args.seed_offset + s) for s in range(args.seeds) for t in tasks]
     with cf.ThreadPoolExecutor(args.parallel) as ex, open(outdir / "runs.jsonl", "a") as log:
         futs = {ex.submit(run_one, args, t, s): (t, s) for t, s in jobs}
@@ -219,7 +226,7 @@ def main():
                 row = {"exp": args.exp, "arm": args.arm, "task": futs[f][0], "seed": futs[f][1], "error": repr(e)}
             log.write(json.dumps(row) + "\n"); log.flush()
             print(row.get("arm"), row.get("task"), row.get("passed"), row.get("cost_usd"), row.get("wall_s"), row.get("kill_reason"), flush=True)
-    bench_after = tree_hash(REPO / "bench" / "tasks") + tree_hash_file(REPO / "bench" / "grade.py")
+    bench_after = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash(REPO / "bench" / "tasks_split1") + tree_hash_file(REPO / "bench" / "grade.py")
     print("BENCH_INTEGRITY", "OK" if bench_before == bench_after else "MODIFIED!", bench_before, bench_after)
 
 
