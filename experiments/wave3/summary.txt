@@ -1,0 +1,7 @@
+base {"n": 1, "pass_rate": 0.0, "passed": 0, "test_frac": 0.0, "cost": 0.0021, "cost_per": 0.00213, "wall_avg": 40.1, "in_tok_avg": 30662, "out_tok_avg": 1154, "cmds_avg": 3.0, "timeouts": 0, "escapes": 0, "lab_events": {}}
+mutation {"n": 3, "pass_rate": 0.0, "passed": 0, "test_frac": 0.306, "cost": 0.0107, "cost_per": 0.00355, "wall_avg": 64.9, "in_tok_avg": 43273, "out_tok_avg": 2249, "cmds_avg": 3.3, "timeouts": 0, "escapes": 0, "lab_events": {"probe_recorded": 2, "mutation_skipped": 2, "mutation_check": 1}}
+probe {"n": 3, "pass_rate": 0.0, "passed": 0, "test_frac": 0.306, "cost": 0.0112, "cost_per": 0.00373, "wall_avg": 83.0, "in_tok_avg": 68501, "out_tok_avg": 2566, "cmds_avg": 6.0, "timeouts": 0, "escapes": 0, "lab_events": {"probe_recorded": 8, "probe_replay": 1}}
+PAIRED mutation vs base: n=1 base_pass=0 arm_pass=0 wins=0 losses=0 sign_test_p=1.000
+   test_frac mean diff=+0.000 perm_p=1.000 | $/run base=0.0021 arm=0.0042
+PAIRED probe vs base: n=1 base_pass=0 arm_pass=0 wins=0 losses=0 sign_test_p=1.000
+   test_frac mean diff=+0.000 perm_p=1.000 | $/run base=0.0021 arm=0.0056
