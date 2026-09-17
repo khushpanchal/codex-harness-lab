@@ -1,7 +1,7 @@
 # RESULTS — Codex Harness Lab
 
-**Running now (20:30):** calibration of benchmark variant `tasks_split1` (first test visible, full suite graded), base x 2 seeds.
-**Spend so far:** $5.14 / $10.00 (exact provider-reported cost).
+**Running now (21:10):** Wave 5 — main A/B on the sensitive regime: base vs probe-replay vs blind-spec-tester vs self-nudge (control) vs mutation-blind-spots; 16 tasks x 3 seeds x 5 arms, one binary. Features verified firing.
+**Spend so far:** $5.87 / $10.00 (exact provider-reported cost). Wave 5 guard: $2.00.
 **Model:** z-ai/glm-5.3-flash. Bench: 56 Exercism tasks (34 python, 22 rust), hidden tests, sandboxed + read lockdown.
 
 **Best ideas so far (by strength of evidence):** none validated yet. Noise floor is large: A/A (identical arms) gave 5 wins / 1 loss on 25 paired tasks.
