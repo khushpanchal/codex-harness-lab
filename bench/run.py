@@ -52,7 +52,7 @@ def config_toml(model, provider, rdir):
     home_root = "/" + "/".join(REPO.parts[1:3])
     return (f'model = "{model}"\nmodel_provider = "lab"\napproval_policy = "never"\n'
             f'model_catalog_json = "{REPO / "bench/config/model_catalog.json"}"\n'
-            'check_for_update_on_startup = false\ndefault_permissions = "lab"\n\n'
+            'check_for_update_on_startup = false\nweb_search = "disabled"\ndefault_permissions = "lab"\n\n'
             f'[permissions.lab]\nextends = ":workspace"\n\n[permissions.lab.filesystem]\n'
             f'"{home_root}" = "deny"\n"{rdir}" = "write"\n"{SANDBOX / "toolchain"}" = "read"\n\n' + prov)
 
