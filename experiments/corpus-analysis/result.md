@@ -8,3 +8,11 @@
   cost −0.10, output tokens +0.05, input tokens +0.07. Longer/more expensive runs are, if anything, slightly worse:
   they are the ones that got stuck.
 Script: this file's numbers come from `scripts/corpus_stats.py`.
+
+## How good is the agent's informal verification? (from the mutation arm's own telemetry, 23 checks)
+The harness mutated the agent's code 289 times and re-ran the agent's own recorded checks: **83% of single-line mutants
+were detected** (mean survival 16.7%, median 0%). So a cheap model's ad-hoc `python3 -c` probing already behaves like a
+decent test suite on tasks this size — there is little verification headroom, which is the third independent explanation
+for the four null results (alongside: verification already happens in 96% of runs; the failures that remain are
+convention/spec-ambiguity failures that no amount of self-verification can resolve).
+Caveat: 12/41 mutation runs had no usable probes (the agent's checks were bundled with edits), so the checker was idle there.
