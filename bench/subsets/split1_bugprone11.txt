@@ -1,0 +1,12 @@
+# tasks where wave5 offline simulation found detectable real bugs in base-arm code (selected before wave6; base re-run fresh)
+../tasks_split1/polyglot/python/go-counting
+../tasks_split1/polyglot/python/grade-school
+../tasks_split1/polyglot/python/grep
+../tasks_split1/polyglot/python/list-ops
+../tasks_split1/polyglot/python/poker
+../tasks_split1/polyglot/python/simple-linked-list
+../tasks_split1/polyglot/python/variable-length-quantity
+../tasks_split1/polyglot/python/scale-generator
+../tasks_split1/polyglot/rust/grade-school
+../tasks_split1/polyglot/rust/variable-length-quantity
+../tasks_split1/polyglot/rust/wordy
