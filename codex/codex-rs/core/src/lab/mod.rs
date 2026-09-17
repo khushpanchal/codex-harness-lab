@@ -5,6 +5,7 @@
 
 pub(crate) mod mutation;
 pub(crate) mod probe_replay;
+pub(crate) mod blind_tester;
 
 use crate::tools::context::ToolOutput;
 use crate::tools::context::ToolPayload;

@@ -694,6 +694,12 @@ pub(crate) async fn run_turn(
                     if crate::lab::mutation::enabled() {
                         if let Ok(Some(prompt)) =
                             tokio::task::spawn_blocking(crate::lab::mutation::on_stop).await
+                    if crate::lab::blind_tester::enabled() {
+                        let spec = crate::lab::task_spec(sess.as_ref()).await;
+                        if let Ok(Some(prompt)) = tokio::task::spawn_blocking(move || {
+                            crate::lab::blind_tester::on_stop(&spec)
+                        })
+                        .await
                         {
                             sess.record_response_item_and_emit_turn_item(
                                 &turn_context,
