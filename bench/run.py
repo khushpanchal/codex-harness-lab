@@ -214,7 +214,7 @@ def main():
         tasks = [l.strip() for l in open(args.tasks) if l.strip() and not l.startswith("#")]
     outdir = REPO / "experiments" / args.exp
     outdir.mkdir(parents=True, exist_ok=True)
-    bench_before = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash_file(REPO / "bench" / "grade.py")
+    bench_before = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash(REPO / "bench" / "tasks_split1") + tree_hash_file(REPO / "bench" / "grade.py")
     jobs = [(t, args.seed_offset + s) for s in range(args.seeds) for t in tasks]
     with cf.ThreadPoolExecutor(args.parallel) as ex, open(outdir / "runs.jsonl", "a") as log:
         futs = {ex.submit(run_one, args, t, s): (t, s) for t, s in jobs}
@@ -226,7 +226,7 @@ def main():
                 row = {"exp": args.exp, "arm": args.arm, "task": futs[f][0], "seed": futs[f][1], "error": repr(e)}
             log.write(json.dumps(row) + "\n"); log.flush()
             print(row.get("arm"), row.get("task"), row.get("passed"), row.get("cost_usd"), row.get("wall_s"), row.get("kill_reason"), flush=True)
-    bench_after = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash_file(REPO / "bench" / "grade.py")
+    bench_after = tree_hash(REPO / "bench" / "tasks") + tree_hash(REPO / "bench" / "tasks_split") + tree_hash(REPO / "bench" / "tasks_split1") + tree_hash_file(REPO / "bench" / "grade.py")
     print("BENCH_INTEGRITY", "OK" if bench_before == bench_after else "MODIFIED!", bench_before, bench_after)
 
 

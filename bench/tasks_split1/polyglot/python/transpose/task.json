@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/transpose",
+ "lang": "python",
+ "solution_files": [
+  "transpose.py"
+ ],
+ "test_files": [
+  "transpose_test.py"
+ ],
+ "visible_tests": [
+  "transpose_test.py"
+ ],
+ "hidden_only_tests": 11
+}

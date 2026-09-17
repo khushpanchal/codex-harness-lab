@@ -1,0 +1,16 @@
+{
+ "id": "split1/python/paasio",
+ "lang": "python",
+ "solution_files": [
+  "paasio.py"
+ ],
+ "test_files": [
+  "paasio_test.py",
+  "test_utils.py"
+ ],
+ "visible_tests": [
+  "paasio_test.py",
+  "test_utils.py"
+ ],
+ "hidden_only_tests": 24
+}

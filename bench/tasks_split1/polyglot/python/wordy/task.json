@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/wordy",
+ "lang": "python",
+ "solution_files": [
+  "wordy.py"
+ ],
+ "test_files": [
+  "wordy_test.py"
+ ],
+ "visible_tests": [
+  "wordy_test.py"
+ ],
+ "hidden_only_tests": 24
+}
