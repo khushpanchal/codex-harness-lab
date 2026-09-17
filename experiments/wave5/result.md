@@ -21,3 +21,10 @@ Report a failing firewalled test only if it PASSES on an independent, also-firew
 - with ONE cheap blind model call as the second version ($0.0004/task): precision **38% -> 94%**, recall 52%;
   false-only-alarm runs 10/38 -> 1/38. Wrong-test share among kept tests 24% -> 3.6%.
 Security: 11 escape-flagged runs were attempts only (curl blocked, rg over readable toolchain found nothing).
+
+## Post-hoc bug found (21:55) — affects the Rust half of two arms
+The harness-side sandbox for blind-test and mutation runs did not allow writes to the scratch dir itself; cargo creates
+`<target>XXXX` sibling temp dirs, so every Rust blind suite failed with "Operation not permitted" (agents received bogus
+alarms) and Rust mutation checks never had usable probes. Python halves were unaffected (offline sims above are
+unaffected: they ran outside the sandbox). Wave-5 verdicts for blind tester and mutation therefore rest on the Python
+tasks only (~half the runs). Fixed in experiment/nversion-test-filter (scratch dir writable).

@@ -150,7 +150,8 @@ fn run_tests_with(
             )
         }
     };
-    let writable = vec![copy.clone(), target];
+    // cargo creates `<target>XXXX` temp siblings, so the whole scratch dir must be writable.
+    let writable = vec![copy.clone(), target, scratch.clone()];
     match super::run_sandboxed(&script, &copy, &writable, &envs, timeout) {
         Some((0, _)) => (true, String::new()),
         Some((_, out)) => (false, out),

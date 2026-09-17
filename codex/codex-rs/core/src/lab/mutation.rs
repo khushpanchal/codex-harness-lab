@@ -143,7 +143,7 @@ fn run_probes_in(copy: &Path, root: &Path, probes: &[(String, PathBuf)], target:
         .map(|(cmd, workdir)| {
             let rel = workdir.strip_prefix(root).map(Path::to_path_buf).unwrap_or_default();
             let wd = copy.join(rel);
-            let writable = vec![copy.to_path_buf(), target.to_path_buf()];
+            let writable = vec![copy.to_path_buf(), target.to_path_buf(), super::scratch_dir()];
             super::run_sandboxed(
                 cmd,
                 &wd,
