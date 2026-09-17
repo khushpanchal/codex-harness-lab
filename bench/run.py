@@ -84,7 +84,7 @@ def run_one(args, task_id, seed):
     (home / "config.toml").write_text(config_toml(args.model, args.provider, rdir))
     prompt = (tdir / "instructions.md").read_text() + SUFFIX.format(files=", ".join(task["solution_files"]))
     env = {
-        "PATH": f"{SANDBOX}/toolchain/cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "PATH": f"{SANDBOX}/toolchain/shims:{SANDBOX}/toolchain/cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
         "HOME": str(home), "CODEX_HOME": str(home),
         "RUSTUP_HOME": f"{SANDBOX}/toolchain/rustup", "CARGO_HOME": f"{SANDBOX}/toolchain/cargo",
         "CARGO_TARGET_DIR": str(rdir / "target"), "LANG": "en_US.UTF-8", "TERM": "dumb",
