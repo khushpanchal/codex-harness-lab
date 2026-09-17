@@ -21,3 +21,15 @@ independent implementation passed 0/74 of its own tests, so the filter suppresse
 raw precision 27% -> N-version 42%, recall 85%, aux cost $0.032. Too small to generalize; a proper cross-model
 replication needs ~10x more tasks and is left as the first follow-up.
 Note: one minimax-written suite hung forever (infinite loop) — a harness running model-written tests must time-box them.
+
+## Does a different model family as the independent implementer raise the alarm rate? NO (offline, $0.009)
+Hypothesis: alarms are rare because the independent implementation shares the agent's misreadings; an implementer from
+another family should disagree more and let more true alarms through.
+| independent implementer | raw precision | N-version precision | recall | runs where a true bug is caught |
+|---|---|---|---|---|
+| same family (glm-5.3-flash) | 36% (89/244) | 88% (46/52) | 52% | 8/20 |
+| different family (deepseek-v4-flash) | 55% (215/388) | 90% (54/60) | **25%** | 10/26 |
+The cross-family implementer *lowers* recall (it disagrees with correct tests too), so it does not raise the alarm rate.
+Precision stays ~90% either way — the mechanism is robust to the implementer's identity, but its coverage is bounded by
+how often two independent readings of a spec agree with each other and disagree with the agent.
+Caveat: the two rows are not perfectly paired — a hanging suite is skipped nondeterministically, so the alarm totals differ.

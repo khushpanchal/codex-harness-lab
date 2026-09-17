@@ -2,11 +2,12 @@
 """Same alarm-precision simulation, but the independent implementation is ONE blind model call
 (glm-5.3-flash, reasoning effort low) given only the task text + starter files — the cheap harness version.
 Implementations are cached in the sandbox; API key read from the sandbox key file, never written."""
-import sys, glob, json, pathlib, shutil, tempfile, collections, itertools, urllib.request, re
+import os, sys, glob, json, pathlib, shutil, tempfile, collections, itertools, urllib.request, re
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from nversion_filter_sim import per_test, S, P, R
 KEY = (S / ".openrouter_key").read_text().strip()
-CACHE = S / "nversion_impls"; CACHE.mkdir(exist_ok=True)
+IMPL_MODEL = os.environ.get("LAB_IMPL_MODEL", "z-ai/glm-5.3-flash")
+CACHE = S / ("nversion_impls" if IMPL_MODEL == "z-ai/glm-5.3-flash" else "nversion_impls_" + IMPL_MODEL.replace("/", "_")); CACHE.mkdir(exist_ok=True)
 cost = 0.0
 
 def blind_impl(lang, name, sample):
@@ -16,7 +17,7 @@ def blind_impl(lang, name, sample):
     ws = R / lang / name / "workspace"; task = json.loads((R / lang / name / "task.json").read_text())
     starter = "\n".join(f"--- {p.relative_to(ws)} ---\n{p.read_text()}" for p in sorted(ws.rglob("*")) if p.is_file())
     target = task["solution_files"][0] if lang == "python" else "src/lib.rs"
-    body = {"model": "z-ai/glm-5.3-flash", "reasoning": {"effort": "low"}, "max_tokens": 8000, "usage": {"include": True},
+    body = {"model": IMPL_MODEL, "reasoning": {"effort": "low"}, "max_tokens": 8000, "usage": {"include": True},
             "messages": [{"role": "system", "content": f"You are an expert programmer. Write the complete contents of {target} implementing the task. Standard library only. Reply with a single fenced code block and nothing else."},
                          {"role": "user", "content": f"# Task\n{(R / lang / name / 'instructions.md').read_text()}\n\n# Starter files\n{starter}"}]}
     req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", data=json.dumps(body).encode(),
