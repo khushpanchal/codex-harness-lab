@@ -128,6 +128,14 @@ pub(crate) fn record_probe(arguments: &str, output_text: &str) {
     if is_pure_read(cmd) {
         return;
     }
+    // Never replay edits, network, VCS or package-manager commands.
+    let lowered = cmd.to_lowercase();
+    if ["apply_patch", "curl ", "wget ", "git ", "pip ", "pip3 ", "cargo add", "npm ", "rm ", "mv ", "cp ", "> ", ">>", "tee "]
+        .iter()
+        .any(|needle| lowered.contains(needle))
+    {
+        return;
+    }
     let Some((exit, output)) = parse_exec_output(output_text) else {
         return; // still running / not a completed process
     };
