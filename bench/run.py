@@ -37,15 +37,20 @@ def tree_hash(p):
     return h.hexdigest()[:16]
 
 
-def config_toml(model, provider):
+def config_toml(model, provider, rdir):
     if provider == "ollama":
         prov = '[model_providers.lab]\nname = "ollama"\nbase_url = "http://localhost:11434/v1"\nwire_api = "responses"\n'
     else:
         prov = ('[model_providers.lab]\nname = "OpenRouter"\nbase_url = "https://openrouter.ai/api/v1"\n'
                 'env_key = "OPENROUTER_API_KEY"\nwire_api = "responses"\n')
-    return (f'model = "{model}"\nmodel_provider = "lab"\napproval_policy = "never"\nsandbox_mode = "workspace-write"\n'
+    # Read lockdown: everything under the user's home is unreadable except this run dir and the toolchain
+    # (requires LAB_ALLOW_READ_METADATA=1 so toolchains can canonicalize paths; see sandboxing/src/seatbelt.rs).
+    home_root = "/" + "/".join(REPO.parts[1:3])
+    return (f'model = "{model}"\nmodel_provider = "lab"\napproval_policy = "never"\n'
             f'model_catalog_json = "{REPO / "bench/config/model_catalog.json"}"\n'
-            'check_for_update_on_startup = false\n\n' + prov)
+            'check_for_update_on_startup = false\ndefault_permissions = "lab"\n\n'
+            f'[permissions.lab]\nextends = ":workspace"\n\n[permissions.lab.filesystem]\n'
+            f'"{home_root}" = "deny"\n"{rdir}" = "write"\n"{SANDBOX / "toolchain"}" = "read"\n\n' + prov)
 
 
 def scan_escape(transcript_text, rdir):
@@ -76,18 +81,20 @@ def run_one(args, task_id, seed):
     work, home = rdir / "work", rdir / "home"
     shutil.copytree(tdir / "workspace", work)
     home.mkdir(parents=True)
-    (home / "config.toml").write_text(config_toml(args.model, args.provider))
+    (home / "config.toml").write_text(config_toml(args.model, args.provider, rdir))
     prompt = (tdir / "instructions.md").read_text() + SUFFIX.format(files=", ".join(task["solution_files"]))
     env = {
         "PATH": f"{SANDBOX}/toolchain/cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
         "HOME": str(home), "CODEX_HOME": str(home),
         "RUSTUP_HOME": f"{SANDBOX}/toolchain/rustup", "CARGO_HOME": f"{SANDBOX}/toolchain/cargo",
         "CARGO_TARGET_DIR": str(rdir / "target"), "LANG": "en_US.UTF-8", "TERM": "dumb",
+        "LAB_ALLOW_READ_METADATA": "1",
     }
     if args.provider != "ollama":
         env["OPENROUTER_API_KEY"] = (SANDBOX / ".openrouter_key").read_text().strip()
+    env["LAB_EVENTS"] = str(rdir / "lab_events.jsonl")
     for kv in args.env:
-        k, v = kv.split("=", 1); env[k] = v
+        k, v = kv.split("=", 1); env[k] = v.replace("{rundir}", str(rdir))
     cmd = [args.binary, "exec", "--json", "--skip-git-repo-check", "-C", str(work)]
     for c in args.config:
         cmd += ["-c", c]
@@ -124,6 +131,13 @@ def run_one(args, task_id, seed):
     pr = PRICES.get(args.model, (0, 0, 0))
     unc = usage["input_tokens"] - usage["cached_input_tokens"]
     cost = unc * pr[0] + usage["cached_input_tokens"] * pr[1] + usage["output_tokens"] * pr[2]
+    lab_events = {}
+    if (rdir / "lab_events.jsonl").exists():
+        for line in (rdir / "lab_events.jsonl").read_text().splitlines():
+            try:
+                ev = json.loads(line); lab_events[ev["kind"]] = lab_events.get(ev["kind"], 0) + 1
+            except Exception:
+                pass
     g = grade(tdir, work)
     (rdir / "grade.json").write_text(json.dumps(g, indent=1))
     row = {
@@ -132,7 +146,7 @@ def run_one(args, task_id, seed):
         "wall_s": round(wall, 1), "timed_out": timed_out, "exit_code": p.returncode,
         "cost_usd_est": round(cost, 5), **usage, "n_commands": n_cmd, "n_command_fail": n_cmd_fail,
         "n_patches": n_patch, "n_patch_fail": n_patch_fail, "n_agent_msgs": n_msgs,
-        "escape_hits": scan_escape(tx, rdir), "run_dir": str(rdir), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "escape_hits": scan_escape(tx, rdir), "lab_events": lab_events, "run_dir": str(rdir), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
     return row
 
