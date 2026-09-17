@@ -19,6 +19,14 @@ model z-ai/glm-5.3-flash via OpenRouter; 56 Exercism tasks (python+rust) with hi
    alarms fire in only ~18% of runs. A promising wave-7 subgroup result (+0.13 test fraction, p=0.017) was **rejected by
    my own adversarial check** — runs with no alarm improved more than runs with alarms.
 
+### Why all four ideas were null (three independent measurements)
+- Agents **already self-verify in 96% of runs** (608/633); those runs pass 44% vs 12% without.
+- Their informal checks are **good**: the mutation arm's telemetry shows the agent's own probes detect **83% of
+  single-line mutants** (median 100%).
+- What is left is not under-verification but **spec/API ambiguity**: showing half the hidden tests moves pass 25% → 91%.
+So "make the agent verify more" is the wrong axis for this regime — the leverage is in *which claims to trust*
+(N-version) and in resolving interface ambiguity (see `experiments/NEXT.md`).
+
 ### What I'd build into a new agent (evidence-ranked)
 1. Never show an agent generated tests that have not been validated against an independent implementation.
 2. Account cost inside the harness from provider-reported per-request usage, and audit hosted/server-side tools:
