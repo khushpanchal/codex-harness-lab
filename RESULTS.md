@@ -35,6 +35,7 @@ So "make the agent verify more" is the wrong axis for this regime — the levera
 4. Time-box and sandbox anything model-written that the harness executes (one model-written suite hung forever; cargo
    needs its scratch *parent* writable, which silently invalidated a whole arm's Rust half until I found it).
 5. Hidden-test benchmarks measure API-convention guessing unless calibrated: showing half the tests took 25% → 91%.
+6. Never grade files the agent could touch: 11.6% of runs modified the test file they were told not to modify.
 
 ---
 
