@@ -82,6 +82,24 @@ def scan_escape(transcript_text, rdir):
     return hits
 
 
+_ITEM_COUNTS: dict = {}
+
+
+def count_items(rdir):
+    """Tool-item count from the transcript, reading only the bytes appended since the last poll."""
+    path = rdir / "transcript.jsonl"
+    pos, count = _ITEM_COUNTS.get(rdir, (0, 0))
+    try:
+        with open(path, "rb") as f:
+            f.seek(pos)
+            chunk = f.read()
+            count += chunk.count(b'"type":"item.started","item":{"id":')
+            _ITEM_COUNTS[rdir] = (pos + len(chunk), count)
+    except FileNotFoundError:
+        pass
+    return count
+
+
 def usage_cost(rdir):
     """Exact spend for this run: sum of provider-reported usage.cost per request (LAB_USAGE_LOG)."""
     total = 0.0
@@ -137,7 +155,7 @@ def run_one(args, task_id, seed):
         while p.poll() is None:
             if time.time() > deadline:
                 killed_reason = "timeout"
-            elif args.max_commands and (rdir / "transcript.jsonl").read_text().count('"type":"item.started","item":{"id":') > args.max_commands:
+            elif args.max_commands and count_items(rdir) > args.max_commands:
                 killed_reason = "max_commands"
             elif args.max_cost and usage_cost(rdir) > args.max_cost:
                 killed_reason = "max_cost"
@@ -145,7 +163,7 @@ def run_one(args, task_id, seed):
                 timed_out = True
                 os.killpg(p.pid, signal.SIGKILL); p.wait()
                 break
-            time.sleep(2)
+            time.sleep(3)
     wall = time.time() - t0
     tx = (rdir / "transcript.jsonl").read_text()
     usage = {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "reasoning_output_tokens": 0}
