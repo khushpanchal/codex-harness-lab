@@ -1,0 +1,7 @@
+base       runs= 33 pass=0.455 test_frac=0.858 $/run=0.0073 wall=965s events={}
+blind      runs= 33 pass=0.455 test_frac=0.798 $/run=0.0169 wall=1131s events={'blind_tests_generated': 31, 'blind_tests_run': 50}
+nversion   runs= 33 pass=0.485 test_frac=0.878 $/run=0.0067 wall=1030s events={'blind_tests_generated': 28, 'blind_tests_run': 34, 'nversion_impl_generated': 25, 'nversion_filter': 29}
+  blind vs base [pass] tasks=11 mean diff=-0.000 strat_perm_p=1.0000
+  blind vs base [test_frac] tasks=11 mean diff=-0.059 strat_perm_p=0.3568
+  nversion vs base [pass] tasks=11 mean diff=+0.030 strat_perm_p=1.0000
+  nversion vs base [test_frac] tasks=11 mean diff=+0.020 strat_perm_p=0.6957
