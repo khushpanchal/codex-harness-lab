@@ -151,7 +151,11 @@ fn run_probes_in(copy: &Path, root: &Path, probes: &[(String, PathBuf)], target:
                 &[("CARGO_TARGET_DIR", target.display().to_string())],
                 Duration::from_secs(60),
             )
-            .map(|(code, out)| (code, super::probe_replay::normalize(&out)))
+            .map(|(code, out)| {
+                // Copies live at different paths; tracebacks must not make every mutant look "killed".
+                let out = out.replace(&copy.display().to_string(), "<ws>");
+                (code, super::probe_replay::normalize(&out))
+            })
         })
         .collect()
 }
@@ -183,7 +187,15 @@ pub(crate) fn on_stop() -> Option<String> {
         return None;
     }
     let baseline = run_probes_in(&base_copy, &root, &probes, &target);
-    let usable: Vec<usize> = (0..probes.len()).filter(|&i| baseline[i].is_some()).collect();
+    let base_copy2 = scratch.join("base2");
+    if copy_dir(&root, &base_copy2).is_err() {
+        return None;
+    }
+    let baseline2 = run_probes_in(&base_copy2, &root, &probes, &target);
+    // Usable probes: completed and deterministic across two unmutated runs at different paths.
+    let usable: Vec<usize> = (0..probes.len())
+        .filter(|&i| baseline[i].is_some() && baseline[i] == baseline2[i])
+        .collect();
     if usable.is_empty() {
         return None;
     }
@@ -216,7 +228,7 @@ pub(crate) fn on_stop() -> Option<String> {
     }
     super::log_event(
         "mutation_check",
-        json!({ "probes": usable.len(), "mutants_tested": tested, "survived": survived.len(), "ms": start.elapsed().as_millis() as u64 }),
+        json!({ "probes": usable.len(), "probes_recorded": probes.len(), "mutants_tested": tested, "survived": survived.len(), "ms": start.elapsed().as_millis() as u64 }),
     );
     if survived.is_empty() {
         return None;
