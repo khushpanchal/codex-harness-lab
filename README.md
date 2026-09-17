@@ -6,24 +6,37 @@ Every idea is implemented *natively* inside a from-source build of [OpenAI Codex
 harness on real tasks with hidden tests. Method modeled on karpathy/autoresearch: frozen benchmark + grader, every
 attempt logged pass or fail, no moving goalposts. Scoreboard: [`RESULTS.md`](RESULTS.md).
 
-## The ideas under test (all harness-level, none copied from another harness)
-| # | idea | one-line mechanism | code |
-|---|---|---|---|
-| 1 | **Probe replay** | every side-effect-free check the agent runs becomes a regression probe; after each edit the harness silently re-runs them (sandboxed) and reports which observable behaviors changed | `core/src/lab/probe_replay.rs` |
-| 2 | **Blind-spec tester (epistemic firewall)** | at "done", a model call that sees ONLY the task text + starter interface (never the code) writes tests; harness runs them on a scratch copy; failures go back to the agent. Control arm: same stop gate, agent just told to write spec tests itself | `core/src/lab/blind_tester.rs` |
-| 3 | **Mutation-guided blind spots** | at "done", harness mutates the agent's code line by line and re-runs the agent's own recorded checks; mutants nobody detects = logic the agent never verified | `core/src/lab/mutation.rs` |
+## The ideas tested (all harness-level, implemented natively in Codex, env-flag gated)
+| # | idea | mechanism | live result | code |
+|---|---|---|---|---|
+| 1 | Probe replay | every side-effect-free check the agent runs becomes a regression probe, re-run (sandboxed) after each edit; behavior diffs appended to the tool output | no effect (wave 5: pass +0.02, p=0.85) | `core/src/lab/probe_replay.rs` |
+| 2 | Blind-spec tester (epistemic firewall) | at "done", a model that sees only the task text + starter files writes tests; harness runs them on a scratch copy; failures go back | no effect (p=0.97), +$0.008/run, +160s | `core/src/lab/blind_tester.rs` |
+| 2c | Self-test nudge (control) | same stop gate, agent asked to write spec tests itself | no effect; increased cheat attempts | same |
+| 3 | Mutation-guided blind spots | at "done", mutate the agent's code and re-run the agent's own checks; undetected mutants reported | no effect (p=1.0) | `core/src/lab/mutation.rs` |
+| 4 | **N-version test validation** | report a firewalled test failure only if an independent one-call blind implementation passes that test | offline: alarm precision 34% -> 84-93%; live A/B: see RESULTS.md | `blind_tester.rs` (`LAB_NVERSION`) |
 
-Hook points in Codex: tool dispatch (`core/src/tools/registry.rs`) and the turn stop gate (`core/src/session/turn.rs`).
+Hook points in Codex: tool dispatch (`core/src/tools/registry.rs`), stop gate (`core/src/session/turn.rs`),
+per-request cost logging (`codex-api/src/sse/responses.rs`), provider body passthrough (`codex-api/src/endpoint/responses.rs`),
+metadata-only stat under read lockdown (`sandboxing/src/seatbelt.rs`).
+
+## What to build into a new agent (ranked by evidence)
+1. **Never show an agent unvalidated generated tests.** Spec-only tests are wrong ~24% of the time; raw alarms are
+   ~34% precise and push agents to break correct code. Validate each generated test against an independent
+   implementation first (N-version): precision 84-93% for ~$0.0004/task.
+2. **Account cost from the provider per request, inside the harness**, and audit hosted/server-side tools
+   (a hidden web_search was 38% of spend and an answer leak).
+3. **Run A/Bs with repeated seeds + stratified tests + an A/A arm.** Single-seed differences of ±5/26 tasks were pure noise.
+4. **Treat "hidden test" benchmarks as convention-guessing unless calibrated** (half-visible tests: 25% -> 91%).
+5. Verification add-ons (replaying probes, mutation feedback, self-test nudges) did not move a cheap model; their
+   value, if any, must be shown on stronger models before building them in.
 
 ## Benchmark (frozen)
 - 56 Exercism exercises (34 Python, 22 Rust) from Aider's polyglot benchmark; agent sees instructions + stubs only,
-  hidden tests graded after the run (`bench/grade.py`; verified on reference solutions = pass, stubs = fail).
+  hidden tests graded after the run. Variants beside it: `tasks_split` (half the tests visible) and `tasks_split1`
+  (first test visible) — grader identical (`bench/grade.py`; verified on reference solutions = pass, stubs = fail).
 - Isolation: each run in its own dir outside the repo, own CODEX_HOME/HOME/TMPDIR; Codex seatbelt sandbox with
   network off and **reads denied** outside the run dir + toolchain; web search disabled; escape-attempt scanner.
 - Exact cost: provider-reported `usage.cost` per request logged from inside Codex (validated against account credits).
-
-## Validated ideas
-None yet — see RESULTS.md for status.
 
 ## Findings about harness evaluation itself (useful for anyone building an agent)
 1. **Hidden server-side tools silently dominate cost.** Codex exposes a hosted `web_search` tool; OpenRouter executed it
