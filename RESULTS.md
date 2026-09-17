@@ -19,6 +19,13 @@ model z-ai/glm-5.3-flash via OpenRouter; 56 Exercism tasks (python+rust) with hi
    alarms fire in only ~18% of runs. A promising wave-7 subgroup result (+0.13 test fraction, p=0.017) was **rejected by
    my own adversarial check** — runs with no alarm improved more than runs with alarms.
 
+### The sharpest number of the night
+Across 89 real requirement violations by the agent, an **independent firewalled implementation makes the same mistake
+48% of the time**. Independent readings of a spec share about half their misreadings — so "ask another instance"
+verification (self-consistency, N-version, second-opinion critics) has a hard recall ceiling near 50%, measured, not
+argued. Beating it requires new *information* (a different rendering of the spec, an existing caller, a user question),
+not more samples.
+
 ### Why all four ideas were null (three independent measurements)
 - Agents **already self-verify in 96% of runs** (608/633); those runs pass 44% vs 12% without.
 - Their informal checks are **good**: the mutation arm's telemetry shows the agent's own probes detect **83% of

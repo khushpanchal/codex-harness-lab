@@ -33,3 +33,11 @@ The cross-family implementer *lowers* recall (it disagrees with correct tests to
 Precision stays ~90% either way — the mechanism is robust to the implementer's identity, but its coverage is bounded by
 how often two independent readings of a spec agree with each other and disagree with the agent.
 Caveat: the two rows are not perfectly paired — a hanging suite is skipped nondeterministically, so the alarm totals differ.
+
+## The ceiling of the mechanism (and of every "ask another instance" verifier), measured
+Across 89 real requirement violations by the agent (tests that pass on the Exercism reference but fail on the agent's
+code), an **independent, firewalled implementation makes the same mistake 48% of the time** (43/89). Independent samples
+of the same spec share about half of the spec misreadings. That correlated-error rate is exactly the recall the filter
+must give up (observed recall 52%) — it is a property of the models, not of the filter, and it bounds self-consistency /
+N-version / "second opinion" verification in general. Raising it requires *information* the second reader does not have
+(a different spec rendering, an existing caller, a user question), not more samples.
