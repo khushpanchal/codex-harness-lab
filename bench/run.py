@@ -112,6 +112,9 @@ def run_one(args, task_id, seed):
         env["OPENROUTER_API_KEY"] = (SANDBOX / ".openrouter_key").read_text().strip()
     env["LAB_EVENTS"] = str(rdir / "lab_events.jsonl")
     env["LAB_USAGE_LOG"] = str(rdir / "usage.jsonl")
+    # harness-side sandboxed work (probe replays, blind tests) gets the same read lockdown as the agent
+    env.update({"LAB_DENY_READ_ROOT": "/" + "/".join(REPO.parts[1:3]), "LAB_READ_ALLOW": f"{rdir}:{SANDBOX / 'toolchain'}",
+                "LAB_SCRATCH": str(rdir / "labtmp"), "LAB_EXTRA_WRITABLE": str(rdir)})
     for kv in args.env:
         k, v = kv.split("=", 1); env[k] = v.replace("{rundir}", str(rdir))
     cmd = [args.binary, "exec", "--json", "--skip-git-repo-check", "-C", str(work)]
