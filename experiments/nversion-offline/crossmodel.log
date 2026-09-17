@@ -1,0 +1,38 @@
+python-go-counting-s0 {'correct_kept': 8, 'wrong_removed': 3, 'correct_removed': 2}
+python-go-counting-s1 {'correct_removed': 1, 'correct_kept': 8, 'wrong_removed': 10}
+python-grade-school-s0 {'wrong_kept': 3, 'wrong_removed': 7, 'correct_kept': 5}
+python-grep-s1 {'correct_kept': 16, 'wrong_removed': 5, 'correct_removed': 4}
+python-list-ops-s0 {'correct_kept': 31, 'wrong_removed': 1, 'wrong_kept': 2, 'correct_removed': 1}
+python-pig-latin-s0 {'correct_kept': 23, 'wrong_removed': 1}
+python-pig-latin-s1 {'correct_kept': 22}
+python-poker-s0 {'correct_kept': 20, 'wrong_removed': 7, 'correct_removed': 6, 'wrong_kept': 1}
+python-scale-generator-s1 {'correct_kept': 18, 'wrong_removed': 6, 'correct_removed': 9}
+python-simple-linked-list-s0 {'wrong_removed': 15, 'correct_kept': 18}
+python-simple-linked-list-s1 {'wrong_removed': 4, 'correct_kept': 19}
+python-variable-length-quantity-s0 {'correct_kept': 9, 'wrong_kept': 1}
+python-zebra-puzzle-s0 {'correct_kept': 2}
+python-zebra-puzzle-s1 {'correct_kept': 4}
+rust-book-store-s1 skip (no compile vs reference or no independent impl)
+rust-grade-school-s0 {'correct_kept': 12}
+rust-grade-school-s1 {'correct_kept': 14, 'wrong_removed': 1}
+rust-macros-s0 skip (no compile vs reference or no independent impl)
+rust-variable-length-quantity-s0 {'correct_kept': 8, 'wrong_removed': 4}
+rust-word-count-s0 skip (no compile vs reference or no independent impl)
+rust-word-count-s1 skip (no compile vs reference or no independent impl)
+rust-wordy-s0 {'correct_kept': 30, 'wrong_removed': 6}
+TOTAL {'correct_kept': 267, 'wrong_removed': 70, 'correct_removed': 23, 'wrong_kept': 7}
+wrong tests removed: 70/77 = 91%; correct tests kept: 267/290 = 92%
+python affine-cipher suite does not run against reference -> skipped
+python beer-song tests=10 wrong_vs_reference=4 indep_passes=0
+python book-store suite does not run against reference -> skipped
+python bottle-song suite does not run against reference -> skipped
+python bowling suite does not run against reference -> skipped
+python connect suite does not run against reference -> skipped
+python dominoes suite does not run against reference -> skipped
+python dot-dsl tests=21 wrong_vs_reference=15 indep_passes=15
+python food-chain tests=14 wrong_vs_reference=5 indep_passes=14
+python forth tests=74 wrong_vs_reference=18 indep_passes=0
+python go-counting suite does not run against reference -> skipped
+python grade-school suite does not run against reference -> skipped
+MODEL minimax/minimax-m3: raw precision 13/48=27% | N-version precision 11/26=42% | recall 11/13=85%
+RUN-LEVEL {'runs': 4, 'raw_only_false': 1, 'nv_only_false': 0} aux cost $0.0316
