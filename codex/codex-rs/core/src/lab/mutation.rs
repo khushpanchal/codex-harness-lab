@@ -245,3 +245,34 @@ pub(crate) fn on_stop() -> Option<String> {
         shown.join("\n")
     ))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn surviving_mutant_is_reported_and_killed_mutants_are_not() {
+        let ws = tempfile::tempdir().expect("tempdir");
+        let scratch = tempfile::tempdir().expect("tempdir");
+        std::fs::write(
+            ws.path().join("calc.py"),
+            "def classify(n):\n    if n > 10:\n        return \"big\"\n    return \"small\"\n",
+        )
+        .expect("write");
+        // SAFETY: test-only env mutation; this test owns these variables.
+        unsafe {
+            std::env::set_var("LAB_WORKSPACE", ws.path());
+            std::env::set_var("LAB_SCRATCH", scratch.path());
+            std::env::set_var("LAB_MUTATION_BLINDSPOTS", "1");
+        }
+        let args = serde_json::json!({ "cmd": "python3 -c 'from calc import classify; print(classify(20))'" }).to_string();
+        super::super::probe_replay::record_probe(&args, "Process exited with code 0\nOutput:\nbig\n");
+        let msg = on_stop().expect("a surviving mutant should be reported");
+        println!("{msg}");
+        // n > 10 -> n >= 10 is not detected by classify(20)
+        assert!(msg.contains("calc.py:2"), "{msg}");
+        assert!(msg.contains(">= 10"), "{msg}");
+        // negating the condition flips classify(20) -> killed, must not be listed
+        assert!(!msg.contains("not (n > 10)"), "{msg}");
+    }
+}

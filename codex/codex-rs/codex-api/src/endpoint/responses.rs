@@ -80,8 +80,23 @@ impl<T: HttpTransport> ResponsesClient<T> {
             compression,
             turn_state,
         } = options;
-        let body = EncodedJsonBody::encode(&request)
-            .map_err(|e| ApiError::Stream(format!("failed to encode responses request: {e}")))?;
+        // Harness lab: merge provider-routing fields (e.g. OpenRouter `provider`) into the body.
+        let body = match std::env::var("LAB_EXTRA_BODY")
+            .ok()
+            .and_then(|extra| serde_json::from_str::<Value>(&extra).ok())
+        {
+            Some(Value::Object(extra)) => {
+                let mut value = serde_json::to_value(&request).map_err(|e| {
+                    ApiError::Stream(format!("failed to encode responses request: {e}"))
+                })?;
+                if let Value::Object(map) = &mut value {
+                    map.extend(extra);
+                }
+                EncodedJsonBody::encode(&value)
+            }
+            _ => EncodedJsonBody::encode(&request),
+        }
+        .map_err(|e| ApiError::Stream(format!("failed to encode responses request: {e}")))?;
 
         let mut headers = extra_headers;
         if let Some(ref thread_id) = thread_id {

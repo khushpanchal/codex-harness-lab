@@ -486,6 +486,13 @@ pub fn process_responses_event(
                 if let (Ok(path), Some(usage)) = (std::env::var("LAB_USAGE_LOG"), resp_val.get("usage")) {
                     if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
                         use std::io::Write;
+                        let mut usage = usage.clone();
+                        if let (Some(map), Some(id)) = (usage.as_object_mut(), resp_val.get("id")) {
+                            map.insert("_gen_id".to_string(), id.clone());
+                        }
+                        if let (Some(map), Some(provider)) = (usage.as_object_mut(), resp_val.get("provider")) {
+                            map.insert("_provider".to_string(), provider.clone());
+                        }
                         let _ = writeln!(f, "{usage}");
                     }
                 }
