@@ -1,0 +1,14 @@
+{
+ "id": "split/python/pig-latin",
+ "lang": "python",
+ "solution_files": [
+  "pig_latin.py"
+ ],
+ "test_files": [
+  "pig_latin_test.py"
+ ],
+ "visible_tests": [
+  "pig_latin_test.py"
+ ],
+ "hidden_only_tests": 11
+}

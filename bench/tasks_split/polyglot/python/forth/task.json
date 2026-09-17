@@ -1,0 +1,14 @@
+{
+ "id": "split/python/forth",
+ "lang": "python",
+ "solution_files": [
+  "forth.py"
+ ],
+ "test_files": [
+  "forth_test.py"
+ ],
+ "visible_tests": [
+  "forth_test.py"
+ ],
+ "hidden_only_tests": 27
+}

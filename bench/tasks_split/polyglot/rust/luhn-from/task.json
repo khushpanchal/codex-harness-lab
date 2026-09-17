@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/luhn-from",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/luhn-from.rs"
+ ],
+ "visible_tests": [
+  "tests/luhn-from.rs"
+ ],
+ "hidden_only_tests": 7
+}

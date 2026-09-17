@@ -1,0 +1,14 @@
+{
+ "id": "split/python/zebra-puzzle",
+ "lang": "python",
+ "solution_files": [
+  "zebra_puzzle.py"
+ ],
+ "test_files": [
+  "zebra_puzzle_test.py"
+ ],
+ "visible_tests": [
+  "zebra_puzzle_test.py"
+ ],
+ "hidden_only_tests": 1
+}

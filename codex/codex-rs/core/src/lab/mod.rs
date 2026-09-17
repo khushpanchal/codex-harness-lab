@@ -195,13 +195,16 @@ pub(crate) fn chat_completion(system: &str, user: &str) -> Option<(String, f64)>
         "model": model,
         "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         "usage": {"include": true},
+        // Keep the aux role fast: long hidden reasoning made glm exceed the timeout in wave 2.
+        "reasoning": {"effort": "low"},
+        "max_tokens": 8000,
     });
     let dir = scratch_dir();
     std::fs::create_dir_all(&dir).ok()?;
     let body_path = dir.join(format!("aux-body-{}.json", std::process::id()));
     std::fs::write(&body_path, body.to_string()).ok()?;
     let mut child = std::process::Command::new("curl")
-        .args(["-sS", "-m", "300", "-X", "POST", &url, "-H", "Content-Type: application/json", "-H", "@-", "--data-binary"])
+        .args(["-sS", "-m", "150", "--retry", "1", "-X", "POST", &url, "-H", "Content-Type: application/json", "-H", "@-", "--data-binary"])
         .arg(format!("@{}", body_path.display()))
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())

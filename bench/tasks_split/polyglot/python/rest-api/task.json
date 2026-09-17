@@ -1,0 +1,14 @@
+{
+ "id": "split/python/rest-api",
+ "lang": "python",
+ "solution_files": [
+  "rest_api.py"
+ ],
+ "test_files": [
+  "rest_api_test.py"
+ ],
+ "visible_tests": [
+  "rest_api_test.py"
+ ],
+ "hidden_only_tests": 4
+}

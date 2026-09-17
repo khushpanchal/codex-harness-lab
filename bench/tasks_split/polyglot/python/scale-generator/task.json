@@ -1,0 +1,14 @@
+{
+ "id": "split/python/scale-generator",
+ "lang": "python",
+ "solution_files": [
+  "scale_generator.py"
+ ],
+ "test_files": [
+  "scale_generator_test.py"
+ ],
+ "visible_tests": [
+  "scale_generator_test.py"
+ ],
+ "hidden_only_tests": 8
+}

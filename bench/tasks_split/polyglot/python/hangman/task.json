@@ -1,0 +1,14 @@
+{
+ "id": "split/python/hangman",
+ "lang": "python",
+ "solution_files": [
+  "hangman.py"
+ ],
+ "test_files": [
+  "hangman_test.py"
+ ],
+ "visible_tests": [
+  "hangman_test.py"
+ ],
+ "hidden_only_tests": 3
+}

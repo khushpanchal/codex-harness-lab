@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/book-store",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/book-store.rs"
+ ],
+ "visible_tests": [
+  "tests/book-store.rs"
+ ],
+ "hidden_only_tests": 9
+}
