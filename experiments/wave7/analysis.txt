@@ -1,0 +1,4 @@
+base       runs= 20 pass=0.400 test_frac=0.787 $/run=0.0065 wall=106s events={}
+nversion   runs= 18 pass=0.611 test_frac=0.922 $/run=0.0130 wall=186s events={'blind_tests_generated': 16, 'blind_tests_run': 18, 'nversion_impl_generated': 14, 'nversion_filter': 15}
+  nversion vs base [pass] tasks=5 mean diff=+0.200 strat_perm_p=0.2308
+  nversion vs base [test_frac] tasks=5 mean diff=+0.132 strat_perm_p=0.0169
