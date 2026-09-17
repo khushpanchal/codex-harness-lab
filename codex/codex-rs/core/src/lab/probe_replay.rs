@@ -7,11 +7,8 @@
 use std::collections::hash_map::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
-use std::process::Command;
-use std::process::Stdio;
 use std::sync::Mutex;
 use std::time::Duration;
 use std::time::Instant;
@@ -39,10 +36,7 @@ pub(crate) fn enabled() -> bool {
 }
 
 fn root() -> PathBuf {
-    std::env::var("LAB_WORKSPACE")
-        .map(PathBuf::from)
-        .or_else(|_| std::env::current_dir())
-        .unwrap_or_else(|_| PathBuf::from("."))
+    super::workspace_root()
 }
 
 /// Cheap fingerprint of the workspace: paths, sizes and mtimes (build/cache dirs skipped).
@@ -155,53 +149,12 @@ pub(crate) fn record_probe(arguments: &str, output_text: &str) {
     super::log_event("probe_recorded", json!({ "cmd": cmd, "exit": exit }));
 }
 
-fn seatbelt_profile(workdir: &Path) -> String {
-    let mut writable = vec![root(), workdir.to_path_buf(), PathBuf::from("/private/tmp"), PathBuf::from("/private/var/folders")];
+fn run_probe(cmd: &str, workdir: &Path, timeout: Duration) -> Option<(i32, String)> {
+    let mut writable = vec![root(), workdir.to_path_buf()];
     if let Ok(extra) = std::env::var("LAB_EXTRA_WRITABLE") {
         writable.push(PathBuf::from(extra));
     }
-    let mut profile = String::from("(version 1)\n(allow default)\n(deny network*)\n(deny file-write*)\n(allow file-write* (literal \"/dev/null\")");
-    for w in writable {
-        let canon = std::fs::canonicalize(&w).unwrap_or(w);
-        profile.push_str(&format!(" (subpath \"{}\")", canon.display()));
-    }
-    profile.push_str(")\n");
-    profile
-}
-
-fn run_probe(cmd: &str, workdir: &Path, timeout: Duration) -> Option<(i32, String)> {
-    let mut child = Command::new("/usr/bin/sandbox-exec")
-        .arg("-p")
-        .arg(seatbelt_profile(workdir))
-        .arg("/bin/zsh")
-        .arg("-c")
-        .arg(format!("exec 2>&1; {cmd}"))
-        .current_dir(workdir)
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
-        .ok()?;
-    let mut stdout = child.stdout.take()?;
-    let reader = std::thread::spawn(move || {
-        let mut buf = Vec::new();
-        let _ = stdout.read_to_end(&mut buf);
-        buf
-    });
-    let start = Instant::now();
-    let status = loop {
-        match child.try_wait() {
-            Ok(Some(status)) => break status,
-            Ok(None) if start.elapsed() < timeout => std::thread::sleep(Duration::from_millis(25)),
-            _ => {
-                let _ = child.kill();
-                let _ = child.wait();
-                return None;
-            }
-        }
-    };
-    let buf = reader.join().ok()?;
-    Some((status.code().unwrap_or(-1), String::from_utf8_lossy(&buf).into_owned()))
+    super::run_sandboxed(cmd, workdir, &writable, &[], timeout)
 }
 
 fn short(cmd: &str) -> String {

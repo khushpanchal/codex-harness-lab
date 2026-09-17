@@ -672,6 +672,7 @@ impl ToolRegistry {
         }
 
         let log_payload = tool_log_payload(&invocation.payload, &invocation.source);
+        crate::lab::snapshot_starter_once();
         let lab_probe_replay = crate::lab::probe_replay::enabled();
         let lab_fp_before = if lab_probe_replay {
             tokio::task::spawn_blocking(crate::lab::probe_replay::fingerprint).await.ok()

@@ -1062,6 +1062,11 @@ pub(crate) fn create_seatbelt_command_args_with_profile(
         }
     }
     policy_sections.push(deny_read_policy);
+    // Harness lab: let sandboxed tools stat (not list/read) denied ancestors so toolchains that
+    // canonicalize their cwd keep working when everything outside the run dir is unreadable.
+    if std::env::var("LAB_ALLOW_READ_METADATA").is_ok_and(|v| v == "1") {
+        policy_sections.push("(allow file-read-metadata)".to_string());
+    }
     // Renaming an allowed ancestor relocates its protected descendants past
     // their pathname carveouts. Keep these denies last so no broader allowance
     // can reopen the unlink operation used by rename.
