@@ -482,6 +482,13 @@ pub fn process_responses_event(
         }
         "response.completed" => {
             if let Some(resp_val) = event.response {
+                // Harness lab: record provider-reported usage (incl. OpenRouter `cost`) per request.
+                if let (Ok(path), Some(usage)) = (std::env::var("LAB_USAGE_LOG"), resp_val.get("usage")) {
+                    if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
+                        use std::io::Write;
+                        let _ = writeln!(f, "{usage}");
+                    }
+                }
                 let metadata = resp_val
                     .get("usage")
                     .filter(|usage| !usage.is_null())

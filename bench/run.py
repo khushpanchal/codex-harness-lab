@@ -37,6 +37,10 @@ def tree_hash(p):
     return h.hexdigest()[:16]
 
 
+def tree_hash_file(f):
+    return hashlib.sha256(f.read_bytes()).hexdigest()[:16]
+
+
 def config_toml(model, provider, rdir):
     if provider == "ollama":
         prov = '[model_providers.lab]\nname = "ollama"\nbase_url = "http://localhost:11434/v1"\nwire_api = "responses"\n'
@@ -72,6 +76,19 @@ def scan_escape(transcript_text, rdir):
     return hits
 
 
+def usage_cost(rdir):
+    """Exact spend for this run: sum of provider-reported usage.cost per request (LAB_USAGE_LOG)."""
+    total = 0.0
+    f = rdir / "usage.jsonl"
+    if f.exists():
+        for line in f.read_text().splitlines():
+            try:
+                total += float(json.loads(line).get("cost") or 0)
+            except Exception:
+                pass
+    return total
+
+
 def run_one(args, task_id, seed):
     tdir = TASKS / task_id
     task = json.loads((tdir / "task.json").read_text())
@@ -81,6 +98,7 @@ def run_one(args, task_id, seed):
     work, home = rdir / "work", rdir / "home"
     shutil.copytree(tdir / "workspace", work)
     home.mkdir(parents=True)
+    (rdir / "tmp").mkdir()
     (home / "config.toml").write_text(config_toml(args.model, args.provider, rdir))
     prompt = (tdir / "instructions.md").read_text() + SUFFIX.format(files=", ".join(task["solution_files"]))
     env = {
@@ -88,11 +106,12 @@ def run_one(args, task_id, seed):
         "HOME": str(home), "CODEX_HOME": str(home),
         "RUSTUP_HOME": f"{SANDBOX}/toolchain/rustup", "CARGO_HOME": f"{SANDBOX}/toolchain/cargo",
         "CARGO_TARGET_DIR": str(rdir / "target"), "LANG": "en_US.UTF-8", "TERM": "dumb",
-        "LAB_ALLOW_READ_METADATA": "1",
+        "LAB_ALLOW_READ_METADATA": "1", "TMPDIR": str(rdir / "tmp"),
     }
     if args.provider != "ollama":
         env["OPENROUTER_API_KEY"] = (SANDBOX / ".openrouter_key").read_text().strip()
     env["LAB_EVENTS"] = str(rdir / "lab_events.jsonl")
+    env["LAB_USAGE_LOG"] = str(rdir / "usage.jsonl")
     for kv in args.env:
         k, v = kv.split("=", 1); env[k] = v.replace("{rundir}", str(rdir))
     cmd = [args.binary, "exec", "--json", "--skip-git-repo-check", "-C", str(work)]
@@ -103,11 +122,20 @@ def run_one(args, task_id, seed):
     timed_out = False
     with open(rdir / "transcript.jsonl", "w") as out, open(rdir / "stderr.log", "w") as err:
         p = subprocess.Popen(cmd, cwd=work, env=env, stdout=out, stderr=err, stdin=subprocess.DEVNULL, start_new_session=True)
-        try:
-            p.wait(timeout=args.timeout)
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            os.killpg(p.pid, signal.SIGKILL); p.wait()
+        deadline = time.time() + args.timeout
+        killed_reason = None
+        while p.poll() is None:
+            if time.time() > deadline:
+                killed_reason = "timeout"
+            elif args.max_commands and (rdir / "transcript.jsonl").read_text().count('"type":"item.started","item":{"id":') > args.max_commands:
+                killed_reason = "max_commands"
+            elif args.max_cost and usage_cost(rdir) > args.max_cost:
+                killed_reason = "max_cost"
+            if killed_reason:
+                timed_out = True
+                os.killpg(p.pid, signal.SIGKILL); p.wait()
+                break
+            time.sleep(2)
     wall = time.time() - t0
     tx = (rdir / "transcript.jsonl").read_text()
     usage = {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "reasoning_output_tokens": 0}
@@ -138,13 +166,20 @@ def run_one(args, task_id, seed):
                 ev = json.loads(line); lab_events[ev["kind"]] = lab_events.get(ev["kind"], 0) + 1
             except Exception:
                 pass
+    lab_cost = 0.0
+    if (rdir / "lab_events.jsonl").exists():
+        for line in (rdir / "lab_events.jsonl").read_text().splitlines():
+            try:
+                lab_cost += float(json.loads(line)["data"].get("cost_usd") or 0)
+            except Exception:
+                pass
     g = grade(tdir, work)
     (rdir / "grade.json").write_text(json.dumps(g, indent=1))
     row = {
         "exp": args.exp, "arm": args.arm, "task": task_id, "seed": seed, "model": args.model,
         "passed": g["passed"], "tests_passed": g["tests_passed"], "tests_total": g["tests_total"],
         "wall_s": round(wall, 1), "timed_out": timed_out, "exit_code": p.returncode,
-        "cost_usd_est": round(cost, 5), **usage, "n_commands": n_cmd, "n_command_fail": n_cmd_fail,
+        "cost_usd_est": round(cost, 5), "cost_usd": round(usage_cost(rdir) + lab_cost, 5), "kill_reason": killed_reason, **usage, "n_commands": n_cmd, "n_command_fail": n_cmd_fail,
         "n_patches": n_patch, "n_patch_fail": n_patch_fail, "n_agent_msgs": n_msgs,
         "escape_hits": scan_escape(tx, rdir), "lab_events": lab_events, "run_dir": str(rdir), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
@@ -158,6 +193,7 @@ def main():
     ap.add_argument("--seeds", type=int, default=1); ap.add_argument("--seed-offset", type=int, default=0)
     ap.add_argument("--model", default="deepseek/deepseek-v4-flash"); ap.add_argument("--provider", default="openrouter")
     ap.add_argument("--parallel", type=int, default=6); ap.add_argument("--timeout", type=int, default=900)
+    ap.add_argument("--max-commands", type=int, default=60); ap.add_argument("--max-cost", type=float, default=0.08)
     ap.add_argument("--env", action="append", default=[]); ap.add_argument("-c", "--config", action="append", default=[])
     args = ap.parse_args()
     args.binary = str(pathlib.Path(args.binary).resolve())
@@ -168,7 +204,7 @@ def main():
         tasks = [l.strip() for l in open(args.tasks) if l.strip() and not l.startswith("#")]
     outdir = REPO / "experiments" / args.exp
     outdir.mkdir(parents=True, exist_ok=True)
-    bench_before = tree_hash(REPO / "bench")
+    bench_before = tree_hash(REPO / "bench" / "tasks") + tree_hash_file(REPO / "bench" / "grade.py")
     jobs = [(t, args.seed_offset + s) for s in range(args.seeds) for t in tasks]
     with cf.ThreadPoolExecutor(args.parallel) as ex, open(outdir / "runs.jsonl", "a") as log:
         futs = {ex.submit(run_one, args, t, s): (t, s) for t, s in jobs}
@@ -179,8 +215,8 @@ def main():
                 import traceback; traceback.print_exc()
                 row = {"exp": args.exp, "arm": args.arm, "task": futs[f][0], "seed": futs[f][1], "error": repr(e)}
             log.write(json.dumps(row) + "\n"); log.flush()
-            print(row.get("arm"), row.get("task"), row.get("passed"), row.get("cost_usd_est"), row.get("wall_s"), flush=True)
-    bench_after = tree_hash(REPO / "bench")
+            print(row.get("arm"), row.get("task"), row.get("passed"), row.get("cost_usd"), row.get("wall_s"), row.get("kill_reason"), flush=True)
+    bench_after = tree_hash(REPO / "bench" / "tasks") + tree_hash_file(REPO / "bench" / "grade.py")
     print("BENCH_INTEGRITY", "OK" if bench_before == bench_after else "MODIFIED!", bench_before, bench_after)
 
 

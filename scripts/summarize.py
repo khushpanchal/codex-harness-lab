@@ -12,7 +12,7 @@ def agg(rs):
     n = len(rs); p = sum(r["passed"] for r in rs)
     tf = sum(r["tests_passed"] / r["tests_total"] for r in rs if r["tests_total"]) / max(1, n)
     return dict(n=n, pass_rate=round(p / max(1, n), 3), passed=p, test_frac=round(tf, 3),
-                cost=round(sum(r["cost_usd_est"] for r in rs), 4), cost_per=round(sum(r["cost_usd_est"] for r in rs) / max(1, n), 5),
+                cost=round(sum(r.get("cost_usd", r["cost_usd_est"]) for r in rs), 4), cost_per=round(sum(r.get("cost_usd", r["cost_usd_est"]) for r in rs) / max(1, n), 5),
                 wall_avg=round(sum(r["wall_s"] for r in rs) / max(1, n), 1), in_tok_avg=int(sum(r["input_tokens"] for r in rs) / max(1, n)),
                 out_tok_avg=int(sum(r["output_tokens"] for r in rs) / max(1, n)), cmds_avg=round(sum(r["n_commands"] for r in rs) / max(1, n), 1),
                 timeouts=sum(r["timed_out"] for r in rs), escapes=sum(bool(r["escape_hits"]) for r in rs),
