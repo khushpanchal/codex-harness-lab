@@ -1,0 +1,9 @@
+base {"n": 9, "pass_rate": 0.222, "passed": 2, "test_frac": 0.69, "cost": 0.2178, "cost_per": 0.0242, "wall_avg": 262.5, "in_tok_avg": 199418, "out_tok_avg": 4071, "cmds_avg": 15.8, "timeouts": 2, "escapes": 1, "lab_events": {}}
+base2 {"n": 23, "pass_rate": 0.13, "passed": 3, "test_frac": 0.458, "cost": 0.4733, "cost_per": 0.02058, "wall_avg": 153.4, "in_tok_avg": 145444, "out_tok_avg": 3346, "cmds_avg": 8.4, "timeouts": 3, "escapes": 4, "lab_events": {}}
+blind {"n": 7, "pass_rate": 0.143, "passed": 1, "test_frac": 0.365, "cost": 0.183, "cost_per": 0.02615, "wall_avg": 308.8, "in_tok_avg": 86348, "out_tok_avg": 1932, "cmds_avg": 9.7, "timeouts": 2, "escapes": 1, "lab_events": {"blind_tests_generated": 3, "blind_tests_run": 6, "aux_call_failed": 2}}
+probe {"n": 23, "pass_rate": 0.261, "passed": 6, "test_frac": 0.604, "cost": 0.3882, "cost_per": 0.01688, "wall_avg": 133.9, "in_tok_avg": 99669, "out_tok_avg": 3023, "cmds_avg": 8.8, "timeouts": 3, "escapes": 4, "lab_events": {"probe_recorded": 107, "probe_replay": 57}}
+selfnudge {"n": 15, "pass_rate": 0.2, "passed": 3, "test_frac": 0.405, "cost": 0.4053, "cost_per": 0.02702, "wall_avg": 184.0, "in_tok_avg": 99593, "out_tok_avg": 3199, "cmds_avg": 9.7, "timeouts": 4, "escapes": 3, "lab_events": {"self_test_nudge": 11}}
+PAIRED base2 vs base: n=9 base_pass=2 arm_pass=0 wins=0 losses=2 sign_test_p=0.500
+PAIRED blind vs base: n=6 base_pass=2 arm_pass=1 wins=0 losses=1 sign_test_p=1.000
+PAIRED probe vs base: n=9 base_pass=2 arm_pass=2 wins=0 losses=0 sign_test_p=1.000
+PAIRED selfnudge vs base: n=8 base_pass=2 arm_pass=2 wins=1 losses=1 sign_test_p=1.000
