@@ -672,6 +672,7 @@ impl ToolRegistry {
         }
 
         let log_payload = tool_log_payload(&invocation.payload, &invocation.source);
+        crate::lab::snapshot_starter_once();
 
         let result = otel
             .log_tool_result_with_tags(
