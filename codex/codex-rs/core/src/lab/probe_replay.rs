@@ -31,8 +31,18 @@ struct Probe {
 
 static PROBES: Mutex<Vec<Probe>> = Mutex::new(Vec::new());
 
+/// Probe recording is on for replay and for mutation blind-spot checks.
 pub(crate) fn enabled() -> bool {
-    super::env_flag("LAB_PROBE_REPLAY")
+    super::env_flag("LAB_PROBE_REPLAY") || super::env_flag("LAB_MUTATION_BLINDSPOTS")
+}
+
+pub(crate) fn probes_snapshot() -> Vec<(String, PathBuf)> {
+    PROBES
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .iter()
+        .map(|p| (p.cmd.clone(), p.workdir.clone()))
+        .collect()
 }
 
 fn root() -> PathBuf {
@@ -90,7 +100,7 @@ fn parse_exec_output(text: &str) -> Option<(i32, String)> {
     Some((exit, output))
 }
 
-fn normalize(output: &str) -> String {
+pub(crate) fn normalize(output: &str) -> String {
     let duration = regex_lite::Regex::new(r"\d+(\.\d+)?\s?(ms|s)\b").expect("valid regex");
     output
         .lines()
@@ -166,7 +176,7 @@ fn run_probe(cmd: &str, workdir: &Path, timeout: Duration) -> Option<(i32, Strin
     super::run_sandboxed(cmd, workdir, &writable, &[], timeout)
 }
 
-fn short(cmd: &str) -> String {
+pub(crate) fn short(cmd: &str) -> String {
     let one_line = cmd.replace('\n', " ⏎ ");
     if one_line.chars().count() > 160 {
         format!("{}…", one_line.chars().take(160).collect::<String>())
@@ -177,6 +187,9 @@ fn short(cmd: &str) -> String {
 
 /// Called after a tool call that changed the workspace. Returns text to append to its output.
 pub(crate) fn replay_after_change() -> Option<String> {
+    if !super::env_flag("LAB_PROBE_REPLAY") {
+        return None;
+    }
     let snapshot: Vec<(String, PathBuf, String, i32)> = {
         let probes = PROBES.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
         probes

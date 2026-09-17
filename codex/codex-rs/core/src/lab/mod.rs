@@ -3,6 +3,7 @@
 
 
 
+pub(crate) mod mutation;
 pub(crate) mod probe_replay;
 
 use crate::tools::context::ToolOutput;
