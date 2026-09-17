@@ -214,8 +214,14 @@ pub(crate) fn chat_completion(system: &str, user: &str) -> Option<(String, f64)>
         .ok()?;
     let out = child.wait_with_output().ok()?;
     let _ = std::fs::remove_file(&body_path);
-    let v: Value = serde_json::from_slice(&out.stdout).ok()?;
-    let text = v["choices"][0]["message"]["content"].as_str()?.to_string();
+    let Ok(v) = serde_json::from_slice::<Value>(&out.stdout) else {
+        log_event("aux_call_failed", serde_json::json!({ "status": out.status.code(), "stdout_head": String::from_utf8_lossy(&out.stdout).chars().take(300).collect::<String>() }));
+        return None;
+    };
+    let Some(text) = v["choices"][0]["message"]["content"].as_str().map(str::to_string) else {
+        log_event("aux_call_failed", serde_json::json!({ "response_head": v.to_string().chars().take(300).collect::<String>() }));
+        return None;
+    };
     let cost = v["usage"]["cost"].as_f64().unwrap_or(0.0);
     Some((text, cost))
 }
