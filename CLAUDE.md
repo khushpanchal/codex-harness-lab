@@ -61,3 +61,14 @@ Reload these every session. They are binding, not suggestions. Tagline: **DO THE
 - `experiments/<slug>/` plan.md, results json, analysis.
 - `scripts/` helpers (secret scan, spend tracker, summarizers).
 - Sandbox: `../codex-harness-sandboxes/` — runs/, toolchains (CARGO_HOME/RUSTUP_HOME), key file.
+
+## Lessons learned in this lab (2026-09-17/18 run) — reload these
+- Disable Codex's hosted `web_search` for benchmarking: OpenRouter executes it server-side (~$0.007/search, 38% of
+  spend, invisible in tokens) and it is an answer leak.
+- Track spend with provider-reported `usage.cost` per request (LAB_USAGE_LOG) — killed runs report no usage otherwise.
+- Launch long jobs fully detached (`sandboxes/detach.py`, double fork + setsid); tool-call cleanup killed runners twice.
+- Always run an A/A arm: identical arms differed by 5 passes / 26 tasks. Use repeated seeds + stratified permutation
+  tests (`scripts/analyze_multiseed.py`), and treat single-seed 56-task A/Bs as noise.
+- Harness-side sandboxes: cargo needs the scratch *parent* dir writable; model-written test suites can hang (time-box).
+- Before trusting a result, check the feature actually fired (lab_events) and that the effect is larger where the
+  feature fired than where it did not (this killed the wave-7 "win").

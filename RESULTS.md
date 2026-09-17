@@ -68,6 +68,12 @@ So "make the agent verify more" is the wrong axis for this regime — the levera
 `README.md` has the commands; every wave has `experiments/<wave>/{plan.md,result.md,runs_final.jsonl,analysis.txt}`.
 Tools: `scripts/analyze_multiseed.py` (validated on synthetic data), `scripts/nversion_*_sim.py` (offline, near-zero cost).
 
+## A/B fairness audit (static)
+Every lab code path in Codex is behind an env flag (`registry.rs` probe hooks, `turn.rs` stop gates, `LAB_USAGE_LOG`,
+`LAB_EXTRA_BODY`, `LAB_ALLOW_READ_METADATA`), so the baseline arm runs the *same binary* with the features off.
+The one unconditional call is `lab::snapshot_starter_once()` (reads the workspace's text files once, before the first
+tool call); it is identical in every arm and does not change what the model sees.
+
 ## Honest limitations
 - One agent model (glm-5.3-flash), one task family (Exercism). A cross-model check of the N-version mechanism
   (minimax-m3) is inconclusive at n=4 runs.
