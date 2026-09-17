@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/pov",
+ "lang": "python",
+ "solution_files": [
+  "pov.py"
+ ],
+ "test_files": [
+  "pov_test.py"
+ ],
+ "visible_tests": [
+  "pov_test.py"
+ ],
+ "hidden_only_tests": 14
+}

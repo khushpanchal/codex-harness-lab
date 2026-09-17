@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/word-count",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/word-count.rs"
+ ],
+ "visible_tests": [
+  "tests/word-count.rs"
+ ],
+ "hidden_only_tests": 13
+}
