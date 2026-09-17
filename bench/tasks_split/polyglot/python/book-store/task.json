@@ -1,0 +1,14 @@
+{
+ "id": "split/python/book-store",
+ "lang": "python",
+ "solution_files": [
+  "book_store.py"
+ ],
+ "test_files": [
+  "book_store_test.py"
+ ],
+ "visible_tests": [
+  "book_store_test.py"
+ ],
+ "hidden_only_tests": 10
+}

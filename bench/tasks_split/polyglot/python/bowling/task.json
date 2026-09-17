@@ -1,0 +1,14 @@
+{
+ "id": "split/python/bowling",
+ "lang": "python",
+ "solution_files": [
+  "bowling.py"
+ ],
+ "test_files": [
+  "bowling_test.py"
+ ],
+ "visible_tests": [
+  "bowling_test.py"
+ ],
+ "hidden_only_tests": 15
+}

@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/nucleotide-codons",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/nucleotide-codons.rs"
+ ],
+ "visible_tests": [
+  "tests/nucleotide-codons.rs"
+ ],
+ "hidden_only_tests": 5
+}

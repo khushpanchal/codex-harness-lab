@@ -1,0 +1,15 @@
+{
+ "id": "split/rust/accumulate",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/accumulate.rs"
+ ],
+ "visible_tests": [
+  "tests/accumulate.rs"
+ ],
+ "hidden_only_tests": 6
+}
