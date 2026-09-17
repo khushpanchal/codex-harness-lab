@@ -672,6 +672,12 @@ impl ToolRegistry {
         }
 
         let log_payload = tool_log_payload(&invocation.payload, &invocation.source);
+        let lab_probe_replay = crate::lab::probe_replay::enabled();
+        let lab_fp_before = if lab_probe_replay {
+            tokio::task::spawn_blocking(crate::lab::probe_replay::fingerprint).await.ok()
+        } else {
+            None
+        };
 
         let result = otel
             .log_tool_result_with_tags(
@@ -767,6 +773,29 @@ impl ToolRegistry {
                                 /*success*/ None,
                             ),
                         });
+                    }
+                }
+                if lab_probe_replay {
+                    let fp_after = tokio::task::spawn_blocking(crate::lab::probe_replay::fingerprint)
+                        .await
+                        .ok();
+                    if fp_after.is_some() && fp_after != lab_fp_before {
+                        if let Ok(Some(suffix)) =
+                            tokio::task::spawn_blocking(crate::lab::probe_replay::replay_after_change)
+                                .await
+                        {
+                            result.result = Box::new(crate::lab::SuffixedOutput {
+                                original: result.result,
+                                suffix,
+                            });
+                        }
+                    } else if invocation.tool_name.name == "exec_command"
+                        && let ToolPayload::Function { arguments } = &invocation.payload
+                        && let Some(text) = crate::lab::response_text(
+                            &result.result.to_response_item(&result.call_id, &result.payload),
+                        )
+                    {
+                        crate::lab::probe_replay::record_probe(arguments, &text);
                     }
                 }
                 tool.on_tool_result_accepted(&invocation, result.result.as_ref());

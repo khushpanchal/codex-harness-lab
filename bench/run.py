@@ -86,8 +86,9 @@ def run_one(args, task_id, seed):
     }
     if args.provider != "ollama":
         env["OPENROUTER_API_KEY"] = (SANDBOX / ".openrouter_key").read_text().strip()
+    env["LAB_EVENTS"] = str(rdir / "lab_events.jsonl")
     for kv in args.env:
-        k, v = kv.split("=", 1); env[k] = v
+        k, v = kv.split("=", 1); env[k] = v.replace("{rundir}", str(rdir))
     cmd = [args.binary, "exec", "--json", "--skip-git-repo-check", "-C", str(work)]
     for c in args.config:
         cmd += ["-c", c]
@@ -124,6 +125,13 @@ def run_one(args, task_id, seed):
     pr = PRICES.get(args.model, (0, 0, 0))
     unc = usage["input_tokens"] - usage["cached_input_tokens"]
     cost = unc * pr[0] + usage["cached_input_tokens"] * pr[1] + usage["output_tokens"] * pr[2]
+    lab_events = {}
+    if (rdir / "lab_events.jsonl").exists():
+        for line in (rdir / "lab_events.jsonl").read_text().splitlines():
+            try:
+                ev = json.loads(line); lab_events[ev["kind"]] = lab_events.get(ev["kind"], 0) + 1
+            except Exception:
+                pass
     g = grade(tdir, work)
     (rdir / "grade.json").write_text(json.dumps(g, indent=1))
     row = {
@@ -132,7 +140,7 @@ def run_one(args, task_id, seed):
         "wall_s": round(wall, 1), "timed_out": timed_out, "exit_code": p.returncode,
         "cost_usd_est": round(cost, 5), **usage, "n_commands": n_cmd, "n_command_fail": n_cmd_fail,
         "n_patches": n_patch, "n_patch_fail": n_patch_fail, "n_agent_msgs": n_msgs,
-        "escape_hits": scan_escape(tx, rdir), "run_dir": str(rdir), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "escape_hits": scan_escape(tx, rdir), "lab_events": lab_events, "run_dir": str(rdir), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
     return row
 
