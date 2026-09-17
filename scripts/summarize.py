@@ -30,3 +30,12 @@ if base and base in by:
         nd = win + loss
         pval = min(1.0, 2 * sum(math.comb(nd, i) for i in range(0, min(win, loss) + 1)) / 2 ** nd) if nd else 1.0
         print(f"PAIRED {arm} vs {base}: n={len(keys)} base_pass={b} arm_pass={t} wins={win} losses={loss} sign_test_p={pval:.3f}")
+        # secondary metric: fraction of hidden tests passed, paired difference + exact sign-flip permutation p (Monte Carlo)
+        import random
+        diffs = [(d[k]["tests_passed"] / d[k]["tests_total"] if d[k]["tests_total"] else 0) - (by[base][k]["tests_passed"] / by[base][k]["tests_total"] if by[base][k]["tests_total"] else 0) for k in keys]
+        if diffs:
+            obs = sum(diffs) / len(diffs); rng = random.Random(0); n_ge = 0
+            for _ in range(20000):
+                if abs(sum(x if rng.random() < 0.5 else -x for x in diffs) / len(diffs)) >= abs(obs) - 1e-12: n_ge += 1
+            cb = sum(by[base][k].get("cost_usd", 0) for k in keys) / len(keys); ca = sum(d[k].get("cost_usd", 0) for k in keys) / len(keys)
+            print(f"   test_frac mean diff={obs:+.3f} perm_p={n_ge/20000:.3f} | $/run base={cb:.4f} arm={ca:.4f}")

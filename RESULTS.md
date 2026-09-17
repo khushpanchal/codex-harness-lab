@@ -1,7 +1,7 @@
 # RESULTS — Codex Harness Lab
 
-**Running now:** smoke-testing Exp1 (probe replay) + Exp2 (blind-spec tester) before the live A/B.
-**Spend so far:** $1.12 / $10.00 (OpenRouter credits delta; token-based estimates undercount ~3x)
+**Running now:** Wave 1 live A/B (started 18:56): base, base2 (A/A), probe-replay, blind-spec-tester, self-test-nudge control — 5×56 runs.
+**Spend so far:** $1.40 / $10.00 (exact: provider-reported usage.cost per request, validated against credits delta)
 **Model:** z-ai/glm-5.3-flash (57% pass on calib14). Bench: 56 Exercism tasks (python+rust), hidden tests.
 
 **Best ideas so far (by strength of evidence):** none validated yet.
