@@ -13,11 +13,18 @@ attempt logged pass or fail, no moving goalposts. Scoreboard: [`RESULTS.md`](RES
 | 2 | Blind-spec tester (epistemic firewall) | at "done", a model that sees only the task text + starter files writes tests; harness runs them on a scratch copy; failures go back | no effect (p=0.97), +$0.008/run, +160s | `core/src/lab/blind_tester.rs` |
 | 2c | Self-test nudge (control) | same stop gate, agent asked to write spec tests itself | no effect; increased cheat attempts | same |
 | 3 | Mutation-guided blind spots | at "done", mutate the agent's code and re-run the agent's own checks; undetected mutants reported | no effect (p=1.0) | `core/src/lab/mutation.rs` |
-| 4 | **N-version test validation** | report a firewalled test failure only if an independent one-call blind implementation passes that test | offline: alarm precision 34% -> 84-93%; live A/B: see RESULTS.md | `blind_tester.rs` (`LAB_NVERSION`) |
+| 4 | **N-version test validation** | report a firewalled test failure only if an independent one-call blind implementation passes that test | offline: alarm precision 34% -> 84-93% ($0.0004/task); live: 85% of alarms suppressed, no end-to-end effect | `blind_tester.rs` (`LAB_NVERSION`) |
 
 Hook points in Codex: tool dispatch (`core/src/tools/registry.rs`), stop gate (`core/src/session/turn.rs`),
 per-request cost logging (`codex-api/src/sse/responses.rs`), provider body passthrough (`codex-api/src/endpoint/responses.rs`),
 metadata-only stat under read lockdown (`sandboxing/src/seatbelt.rs`).
+
+## The result I would put on a slide
+Across 89 real requirement violations by an agent, an **independent firewalled implementation makes the same mistake 48%
+of the time**. Independent readings of a spec share ~half their misreadings, so every "ask another instance" verifier
+(self-consistency, N-version, second-opinion critic) has a measured recall ceiling near 50%. Validating generated tests
+against such an implementation still lifts alarm precision from 34% to 84–93% for $0.0004/task — the cheapest reliable
+way found here to stop an agent being misled by its own generated tests. Full numbers: [RESULTS.md](RESULTS.md).
 
 ## What to build into a new agent (ranked by evidence)
 1. **Never show an agent unvalidated generated tests.** Spec-only tests are wrong ~24% of the time; raw alarms are
