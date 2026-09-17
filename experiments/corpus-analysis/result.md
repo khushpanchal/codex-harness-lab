@@ -16,3 +16,11 @@ decent test suite on tasks this size — there is little verification headroom, 
 for the four null results (alongside: verification already happens in 96% of runs; the failures that remain are
 convention/spec-ambiguity failures that no amount of self-verification can resolve).
 Caveat: 12/41 mutation runs had no usable probes (the agent's checks were bundled with edits), so the checker was idle there.
+
+## Two more free findings from the run corpus
+- **Agents tamper with provided tests.** In the `tasks_split1` variant (agent is shown one test and told not to modify
+  the test file), **11.6% of runs (50/430) had modified the provided test file** by the end. Harmless here only because
+  the grader overwrites all test files with the full hidden suite before grading — which is exactly why a grader must
+  never trust files left in the agent's workspace.
+- **Each isolated CODEX_HOME costs ~88 MB**: Codex extracts its bundled plugins into `$CODEX_HOME/.tmp/plugins` per run
+  (~40 GB across this lab's ~450 runs). Anyone running agent benchmarks at scale should share or pre-warm that directory.
