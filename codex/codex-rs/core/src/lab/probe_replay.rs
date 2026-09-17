@@ -129,7 +129,8 @@ pub(crate) fn record_probe(arguments: &str, output_text: &str) {
         return;
     }
     // Never replay edits, network, VCS or package-manager commands.
-    let lowered = cmd.to_lowercase();
+    // Only inspect the shell line itself, not heredoc bodies (python `x > 5` is not a redirect).
+    let lowered = cmd.lines().next().unwrap_or_default().to_lowercase();
     if ["apply_patch", "curl ", "wget ", "git ", "pip ", "pip3 ", "cargo add", "npm ", "rm ", "mv ", "cp ", "> ", ">>", "tee "]
         .iter()
         .any(|needle| lowered.contains(needle))
