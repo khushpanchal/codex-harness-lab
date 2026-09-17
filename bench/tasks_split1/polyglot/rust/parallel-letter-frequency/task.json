@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/parallel-letter-frequency",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/parallel-letter-frequency.rs"
+ ],
+ "visible_tests": [
+  "tests/parallel-letter-frequency.rs"
+ ],
+ "hidden_only_tests": 9
+}

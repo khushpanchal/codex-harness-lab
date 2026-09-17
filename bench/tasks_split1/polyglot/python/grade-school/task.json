@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/grade-school",
+ "lang": "python",
+ "solution_files": [
+  "grade_school.py"
+ ],
+ "test_files": [
+  "grade_school_test.py"
+ ],
+ "visible_tests": [
+  "grade_school_test.py"
+ ],
+ "hidden_only_tests": 19
+}

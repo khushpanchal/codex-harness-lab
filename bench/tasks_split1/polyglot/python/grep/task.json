@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/grep",
+ "lang": "python",
+ "solution_files": [
+  "grep.py"
+ ],
+ "test_files": [
+  "grep_test.py"
+ ],
+ "visible_tests": [
+  "grep_test.py"
+ ],
+ "hidden_only_tests": 24
+}

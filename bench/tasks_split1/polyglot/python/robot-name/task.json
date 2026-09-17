@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/robot-name",
+ "lang": "python",
+ "solution_files": [
+  "robot_name.py"
+ ],
+ "test_files": [
+  "robot_name_test.py"
+ ],
+ "visible_tests": [
+  "robot_name_test.py"
+ ],
+ "hidden_only_tests": 3
+}

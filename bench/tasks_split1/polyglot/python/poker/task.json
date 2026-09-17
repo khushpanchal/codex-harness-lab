@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/poker",
+ "lang": "python",
+ "solution_files": [
+  "poker.py"
+ ],
+ "test_files": [
+  "poker_test.py"
+ ],
+ "visible_tests": [
+  "poker_test.py"
+ ],
+ "hidden_only_tests": 36
+}

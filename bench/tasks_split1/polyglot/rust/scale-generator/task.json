@@ -1,0 +1,15 @@
+{
+ "id": "split1/rust/scale-generator",
+ "lang": "rust",
+ "solution_files": [
+  "src/lib.rs",
+  "Cargo.toml"
+ ],
+ "test_files": [
+  "tests/scale-generator.rs"
+ ],
+ "visible_tests": [
+  "tests/scale-generator.rs"
+ ],
+ "hidden_only_tests": 16
+}

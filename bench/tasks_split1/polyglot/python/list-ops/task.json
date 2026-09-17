@@ -1,0 +1,14 @@
+{
+ "id": "split1/python/list-ops",
+ "lang": "python",
+ "solution_files": [
+  "list_ops.py"
+ ],
+ "test_files": [
+  "list_ops_test.py"
+ ],
+ "visible_tests": [
+  "list_ops_test.py"
+ ],
+ "hidden_only_tests": 23
+}
