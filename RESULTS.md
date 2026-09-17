@@ -1,19 +1,23 @@
 # RESULTS — Codex Harness Lab
 
-**Running now (21:10):** Wave 5 — main A/B on the sensitive regime: base vs probe-replay vs blind-spec-tester vs self-nudge (control) vs mutation-blind-spots; 16 tasks x 3 seeds x 5 arms, one binary. Features verified firing.
-**Spend so far:** $5.87 / $10.00 (exact provider-reported cost). Wave 5 guard: $2.00.
-**Model:** z-ai/glm-5.3-flash. Bench: 56 Exercism tasks (34 python, 22 rust), hidden tests, sandboxed + read lockdown.
+**Running now (22:05):** Wave 6 — live A/B of **N-version test validation** (base vs raw blind tester vs N-version-filtered), 11 bug-prone tasks x 3 seeds.
+**Spend so far:** $8.04 / $10.00 (exact provider-reported cost). Wave 6 guard $1.30.
+**Model:** z-ai/glm-5.3-flash. Bench: 56 Exercism tasks (python+rust), original hidden-test variant + held-out variants (see below).
 
-**Best ideas so far (by strength of evidence):** none validated yet. Noise floor is large: A/A (identical arms) gave 5 wins / 1 loss on 25 paired tasks.
+**Best ideas so far (by strength of evidence):**
+1. **N-version test validation** (new, born from a failed experiment): report a firewalled spec-test failure only if an
+   independent one-call blind implementation passes that test. Offline on real agent code: alarm precision **38% -> 94%**
+   (recall 52%), runs receiving only false alarms 10/38 -> 1/38, for **$0.0004/task**. Live A/B running (wave 6).
+2. Everything else live-tested so far shows **no effect** on glm-5.3-flash: probe replay, blind-spec tester, self-test nudge,
+   mutation blind spots (wave 5: pass Δ within ±0.02, all p>0.25, 185 runs, 3 seeds, stratified permutation test).
 
-**Evaluation findings (confirmed):**
-1. Codex's hosted `web_search` tool was silently executed server-side by OpenRouter: 38% of all spend and an answer leak. Disabled -> $/M input 0.093 -> 0.044.
-2. Agents try to cheat: `curl` the upstream Exercism test files, `find` sibling run dirs (blocked by sandbox/read lockdown).
-3. Killed runs report no usage; token-based cost estimates undercounted 3x -> exact per-request cost logging added inside Codex.
-4. **The original hidden-test benchmark measures API-convention guessing, not correctness**: showing the agent half of the tests
-   (held-out variant) lifts glm-5.3-flash from ~25% to 91% pass (21/23). Most "failures" were e.g. returning `''` instead of `[]`.
-   -> verification-style harness ideas can't show effects there; added variants beside it (not replacing it).
-5. Repetition loops are rare (3.4% of commands) -> "loop breaker" style ideas rejected by pre-analysis.
+**Evaluation findings (confirmed, useful to anyone building an agent):**
+1. Codex's hosted `web_search` tool ran server-side on OpenRouter: 38% of spend, invisible in token counts, and an answer leak.
+2. Hidden-test benchmarks mostly measure API-convention guessing: showing half the tests lifts pass 25% -> 91%.
+3. Firewalled "spec-only" test writers are wrong 24% of the time per test; 11/13 suites contain a wrong test -> raw alarms are 31-38% precise and can make agents break correct code.
+4. Agents try to cheat (curl upstream tests, search sibling dirs, grep toolchains for canonical data); a "write tests from the spec" nudge increased hunting.
+5. Cost accounting: killed runs report no usage (estimates undercount 3x) -> log provider cost per request inside the harness.
+6. Identical noise arms (A/A) differed by 5 passes / 26 tasks: single-seed agent A/Bs are close to meaningless.
 
 | idea | branch | metric | baseline | result | verdict | why genuinely new |
 |---|---|---|---|---|---|---|
@@ -22,3 +26,9 @@
 | Exp2 blind-spec tester (firewalled tests from spec only) + self-nudge control | experiment/blind-spec-tester | pass rate (paired) | wave1 base | wave1 n=7, no signal | inconclusive (wave1); re-run in wave2 | verification by an information-firewalled role; control isolates firewall vs nudge |
 | Exp3 mutation-guided blind spots | experiment/mutation-blindspots | pass rate (paired) | — | unit test passes; live in wave3 | pending | mutation analysis over the agent's *own* ad-hoc checks, fed back mid-task |
 | Loop "attractor erasure" | — | exact-repeat rate | — | 3.4% of commands repeat | rejected by pre-analysis | (not run: too rare to matter) |
+| Wave 5 (sensitive regime, 3 seeds): probe replay | experiment/probe-replay | pass / test frac | 0.500 / 0.870 | 0.523 / 0.870 (p=0.85) | reverted | replays the agent's own ad-hoc checks after every edit |
+| Wave 5: mutation blind spots | experiment/mutation-blindspots | pass / test frac | 0.500 / 0.870 | 0.523 / 0.823 (p=1.0) | reverted (rust half invalid: sandbox bug) | mutation analysis over the agent's own checks |
+| Wave 5: blind-spec tester | experiment/blind-spec-tester | pass / test frac | 0.500 / 0.870 | 0.545 / 0.830 (p=0.97) | reverted (rust half invalid) | epistemic firewall between implementer and tester |
+| Wave 5: self-test nudge (control) | experiment/blind-spec-tester | pass / test frac | 0.500 / 0.870 | 0.516 / 0.803 (p=0.92) | reverted | control |
+| Benchmark variant: half tests visible | main | pass | 25% (original) | 91% (21/23) | kept as finding (ceiling) | shows failures are convention-guessing |
+| N-version test validation (offline sim) | experiment/nversion-test-filter | alarm precision | 38% raw | 94% (recall 52%) | promising -> live wave 6 | independent blind implementation as a noisy oracle for test correctness |
