@@ -114,17 +114,31 @@ fn copy_workspace(src: &Path, dst: &Path) -> std::io::Result<()> {
 
 /// Returns (all_passed, summary_output).
 fn run_tests(tests: &GeneratedTests, lang: &Lang, round: usize) -> (bool, String) {
+    run_tests_with(tests, lang, &format!("blind-run-{round}"), None)
+}
+
+/// Runs the suite on a scratch copy of the workspace, optionally replacing one source file
+/// (used to run the same tests against the independent implementation).
+fn run_tests_with(
+    tests: &GeneratedTests,
+    lang: &Lang,
+    label: &str,
+    replace: Option<(&str, &str)>,
+) -> (bool, String) {
     let scratch = super::scratch_dir();
-    let copy = scratch.join(format!("blind-run-{round}"));
+    let copy = scratch.join(label);
     let _ = std::fs::remove_dir_all(&copy);
     if copy_workspace(&super::workspace_root(), &copy).is_err() {
         return (true, String::new());
+    }
+    if let Some((rel, code)) = replace {
+        let _ = std::fs::write(copy.join(rel), code);
     }
     let target: PathBuf = scratch.join("blind-target");
     let (script, timeout, envs) = match lang {
         Lang::Python => {
             let _ = std::fs::write(copy.join(&tests.file_name), &tests.code);
-            ("python3 -m unittest test_blind_spec 2>&1".to_string(), Duration::from_secs(60), vec![])
+            ("python3 -m unittest -v test_blind_spec 2>&1".to_string(), Duration::from_secs(60), vec![])
         }
         Lang::Rust { .. } => {
             let _ = std::fs::create_dir_all(copy.join("tests"));
@@ -142,6 +156,73 @@ fn run_tests(tests: &GeneratedTests, lang: &Lang, round: usize) -> (bool, String
         Some((_, out)) => (false, out),
         None => (false, "(test run timed out)".to_string()),
     }
+}
+
+static INDEP_IMPL: Mutex<Option<(String, String)>> = Mutex::new(None);
+
+pub(crate) fn nversion_enabled() -> bool {
+    super::env_flag("LAB_NVERSION")
+}
+
+/// Relative path of the main solution file and a one-call blind implementation of it.
+fn independent_impl(spec: &str, lang: &Lang) -> Option<(String, String)> {
+    if let Some(cached) = INDEP_IMPL.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone() {
+        return Some(cached);
+    }
+    let target = match lang {
+        Lang::Rust { .. } => "src/lib.rs".to_string(),
+        Lang::Python => super::starter_files()
+            .iter()
+            .map(|(p, _)| p.clone())
+            .find(|p| p.ends_with(".py") && !p.contains("test"))?,
+    };
+    let starter = super::starter_files()
+        .iter()
+        .map(|(path, text)| format!("--- {path} ---\n{text}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let system = format!("You are an expert programmer. Write the complete contents of {target} implementing the task. Standard library only. Reply with a single fenced code block and nothing else.");
+    let user = format!("# Task\n{spec}\n\n# Starter files\n{starter}");
+    let (text, cost) = super::chat_completion(&system, &user)?;
+    let code = extract_code_block(&text);
+    super::log_event("nversion_impl_generated", json!({ "bytes": code.len(), "cost_usd": cost }));
+    let result = (target, code);
+    *INDEP_IMPL.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(result.clone());
+    Some(result)
+}
+
+/// Per-test outcomes parsed from `unittest -v` or `cargo test` output: (name, passed).
+fn per_test_outcomes(output: &str, lang: &Lang) -> Vec<(String, bool)> {
+    let mut out = Vec::new();
+    match lang {
+        Lang::Python => {
+            let re = regex_lite::Regex::new(r"(?m)^(test\w+) \(.*?\)(?:\n.*?)? \.\.\. (ok|FAIL|ERROR)").expect("regex");
+            for c in re.captures_iter(output) {
+                out.push((c[1].to_string(), &c[2] == "ok"));
+            }
+        }
+        Lang::Rust { .. } => {
+            let re = regex_lite::Regex::new(r"(?m)^test (\S+) \.\.\. (ok|FAILED)").expect("regex");
+            for c in re.captures_iter(output) {
+                out.push((c[1].to_string(), &c[2] == "ok"));
+            }
+        }
+    }
+    out
+}
+
+/// Failure detail blocks for the given test names only.
+fn failure_blocks(output: &str, names: &[String], lang: &Lang) -> String {
+    let blocks: Vec<&str> = match lang {
+        Lang::Python => output.split("\n======================================================================\n").collect(),
+        Lang::Rust { .. } => output.split("\n---- ").collect(),
+    };
+    blocks
+        .iter()
+        .filter(|b| names.iter().any(|n| b.lines().next().is_some_and(|first| first.contains(n.as_str()))))
+        .map(|b| b.lines().take(25).collect::<Vec<_>>().join("\n"))
+        .collect::<Vec<_>>()
+        .join("\n\n")
 }
 
 fn tail_lines(text: &str, n: usize) -> String {
@@ -184,6 +265,41 @@ pub(crate) fn on_stop(spec: &str) -> Option<String> {
     if passed {
         ROUNDS.store(usize::MAX / 2, Ordering::SeqCst);
         return None;
+    }
+    if nversion_enabled() {
+        let (target, code) = independent_impl(spec, &lang)?;
+        let (_, indep_output) = run_tests_with(&tests, &lang, &format!("nversion-{round}"), Some((&target, &code)));
+        let indep_pass: std::collections::HashSet<String> = per_test_outcomes(&indep_output, &lang)
+            .into_iter()
+            .filter(|(_, ok)| *ok)
+            .map(|(n, _)| n)
+            .collect();
+        let agent = per_test_outcomes(&output, &lang);
+        let raw_failing = agent.iter().filter(|(_, ok)| !*ok).count();
+        let validated: Vec<String> = agent
+            .into_iter()
+            .filter(|(n, ok)| !*ok && indep_pass.contains(n))
+            .map(|(n, _)| n)
+            .collect();
+        super::log_event(
+            "nversion_filter",
+            json!({ "round": round, "raw_failing": raw_failing, "validated_failing": validated.len(), "indep_passing": indep_pass.len() }),
+        );
+        if validated.is_empty() {
+            ROUNDS.store(usize::MAX / 2, Ordering::SeqCst);
+            return None;
+        }
+        let shown_path = match lang {
+            Lang::Python => tests.file_name.clone(),
+            Lang::Rust { .. } => format!("tests/{}", tests.file_name),
+        };
+        return Some(format!(
+            "[harness N-version check] Before you finish: an independent tester wrote tests from ONLY the task description (never seeing your code), and an independent programmer separately implemented the task from the same description. The harness kept only tests that the independent implementation PASSES. {} of those validated test(s) FAIL on your current code:\n{}\n\nFailure details:\n```\n{}\n```\n\nTest file for reference (`{shown_path}`; run by the harness in a scratch copy, not in your workspace; ignore tests not listed above):\n```\n{}\n```\n\nTwo independent readings of the description agree on these behaviors, so they very likely reflect real requirements. Re-read the description, fix your code, then finish.",
+            validated.len(),
+            validated.iter().map(|n| format!("• {n}")).collect::<Vec<_>>().join("\n"),
+            failure_blocks(&output, &validated, &lang),
+            tests.code
+        ));
     }
     let shown_path = match lang {
         Lang::Python => tests.file_name.clone(),
