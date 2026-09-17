@@ -3,6 +3,8 @@
 
 
 
+pub(crate) mod blind_tester;
+
 use crate::tools::context::ToolOutput;
 use crate::tools::context::ToolPayload;
 use codex_protocol::models::FunctionCallOutputBody;
