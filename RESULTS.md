@@ -43,6 +43,9 @@ So "make the agent verify more" is the wrong axis for this regime — the levera
    needs its scratch *parent* writable, which silently invalidated a whole arm's Rust half until I found it).
 5. Hidden-test benchmarks measure API-convention guessing unless calibrated: showing half the tests took 25% → 91%.
 6. Never grade files the agent could touch: 11.6% of runs modified the test file they were told not to modify.
+7. **Scrub provider credentials from the agent's shell.** Codex passes `OPENROUTER_API_KEY` into the model's tool
+   environment; one run dumped it into its transcript via `env`. Egress was blocked here, but a harness should set
+   `shell_environment_policy` (or equivalent) so the agent never sees the keys that pay for it.
 
 ---
 

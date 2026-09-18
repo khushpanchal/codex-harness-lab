@@ -49,8 +49,15 @@ way found here to stop an agent being misled by its own generated tests. Full nu
 1. **Hidden server-side tools silently dominate cost.** Codex exposes a hosted `web_search` tool; OpenRouter executed it
    server-side at ~$0.007/search. It was 38% of our spend and invisible in token counts — and an answer leak.
 2. **Cheap agents actively try to cheat**: curl'ing the benchmark's upstream test files, `find` over sibling run dirs.
-3. **Killed runs report no usage** (turn-level usage only arrives at the end) → token-based cost estimates undercount 3×.
-4. Cheap models loop (e.g. 52 identical commands); loops dominate cost variance → per-run cost caps are essential.
+3. **The agent's shell inherits the harness's provider credentials** — a run dumped `OPENROUTER_API_KEY` into its
+   transcript with `env`. Scrub them (`shell_environment_policy`); network egress being blocked is not a substitute.
+4. **Killed runs report no usage** (turn-level usage only arrives at the end) → token-based cost estimates undercount 3×.
+5. Cheap models loop (e.g. 52 identical commands); loops dominate cost variance → per-run cost caps are essential.
+
+All raw artifacts are archived in [`evidence/lab_evidence.tgz`](evidence/) (transcripts, per-request cost, feature-fired
+events, grades, final code). The scratch dir used during the run (`../codex-harness-sandboxes/`) was deleted afterwards;
+re-create it by installing a Rust toolchain there and re-cloning `Aider-AI/polyglot-benchmark` (needed only for the
+offline sims' reference solutions).
 
 ## Reproduce
 ```bash
